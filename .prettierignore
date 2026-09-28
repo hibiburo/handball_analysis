@@ -1,0 +1,11 @@
+# ドキュメントは表や図の整形を手で管理するため対象外
+docs/
+.steering/
+CLAUDE.md
+
+package-lock.json
+dist/
+coverage/
+playwright-report/
+test-results/
+.claude/

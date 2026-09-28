@@ -1,0 +1,121 @@
+@import 'tailwindcss';
+
+/*
+ * デザイントークン（development-guidelines.md 4.2）。
+ * 色は意味で名前を付け、明るい表示とダーク表示の値をそれぞれ定義する。
+ * コンポーネントでは bg-surface / text-muted のようにトークン名で使い、直接の色指定はしない。
+ */
+:root {
+  color-scheme: light;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --surface-hover: #f1f5f9;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-foreground: #ffffff;
+  --danger: #dc2626;
+  --danger-foreground: #ffffff;
+  --warning: #b45309;
+  --warning-surface: #fef3c7;
+  --result-goal: #dc2626;
+  --result-save: #16a34a;
+  --result-other: #64748b;
+
+  /* ヒートマップ（単色の6段階）。-fg はその段階の上に置く文字色 */
+  --heat-0: #eef2ff;
+  --heat-1: #c7d2fe;
+  --heat-2: #a5b4fc;
+  --heat-3: #818cf8;
+  --heat-4: #6366f1;
+  --heat-5: #4338ca;
+  --heat-0-fg: #1e1b4b;
+  --heat-1-fg: #1e1b4b;
+  --heat-2-fg: #1e1b4b;
+  --heat-3-fg: #ffffff;
+  --heat-4-fg: #ffffff;
+  --heat-5-fg: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --background: #0b1120;
+    --surface: #111827;
+    --surface-hover: #1f2937;
+    --foreground: #e5e7eb;
+    --muted: #9ca3af;
+    --border: #1f2937;
+    --primary: #3b82f6;
+    --primary-hover: #60a5fa;
+    --primary-foreground: #ffffff;
+    --danger: #f87171;
+    --danger-foreground: #0b1120;
+    --warning: #fbbf24;
+    --warning-surface: #422006;
+    --result-goal: #f87171;
+    --result-save: #4ade80;
+    --result-other: #9ca3af;
+
+    --heat-0: #1e1b4b;
+    --heat-1: #312e81;
+    --heat-2: #3730a3;
+    --heat-3: #4f46e5;
+    --heat-4: #818cf8;
+    --heat-5: #c7d2fe;
+    --heat-0-fg: #e0e7ff;
+    --heat-1-fg: #e0e7ff;
+    --heat-2-fg: #ffffff;
+    --heat-3-fg: #ffffff;
+    --heat-4-fg: #1e1b4b;
+    --heat-5-fg: #1e1b4b;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-warning: var(--warning);
+  --color-warning-surface: var(--warning-surface);
+  --color-result-goal: var(--result-goal);
+  --color-result-save: var(--result-save);
+  --color-result-other: var(--result-other);
+  --color-heat-0: var(--heat-0);
+  --color-heat-1: var(--heat-1);
+  --color-heat-2: var(--heat-2);
+  --color-heat-3: var(--heat-3);
+  --color-heat-4: var(--heat-4);
+  --color-heat-5: var(--heat-5);
+  --color-heat-0-fg: var(--heat-0-fg);
+  --color-heat-1-fg: var(--heat-1-fg);
+  --color-heat-2-fg: var(--heat-2-fg);
+  --color-heat-3-fg: var(--heat-3-fg);
+  --color-heat-4-fg: var(--heat-4-fg);
+  --color-heat-5-fg: var(--heat-5-fg);
+}
+
+@layer base {
+  html {
+    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+}

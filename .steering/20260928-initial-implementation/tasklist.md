@@ -2,7 +2,7 @@
 
 - 作業ディレクトリ: `.steering/20260928-initial-implementation/`
 - 作成日: 2026-09-28
-- ステータス: レビュー待ち
+- ステータス: 承認済み（2026-09-28）
 - 前提: [requirements.md](./requirements.md)、[design.md](./design.md)（いずれも承認済み）
 
 ## 進め方
@@ -17,7 +17,7 @@
 
 | フェーズ | 状態 |
 |---|---|
-| 1 開発基盤 | 未着手 |
+| 1 開発基盤 | 完了（TypeScript は 6.0 を採用。T1.1.4 参照） |
 | 2 ドメイン・保存層 | 未着手 |
 | 3 GK・試合・記録 | 未着手 |
 | 4 分析 | 未着手 |
@@ -30,32 +30,32 @@
 
 ### 1.1 プロジェクト作成
 
-- [ ] T1.1.1 Vite の React + TypeScript テンプレートでプロジェクトを作成し、既存の docs/・.steering/・CLAUDE.md と共存させる
-- [ ] T1.1.2 依存関係を追加する（react-router、dexie、dexie-react-hooks、zustand、zod、clsx、@types/youtube）
-- [ ] T1.1.3 `tsconfig.json` に `strict`、`noUncheckedIndexedAccess`、`exactOptionalPropertyTypes`、パスエイリアス `@/` を設定する（vite.config.ts にも反映）
-- [ ] T1.1.4 TypeScript 7・Vite 8 と各プラグインの相性を確認する。問題があれば1つ前のメジャーバージョンに下げ、architecture.md の更新を提案する
-- [ ] T1.1.5 `.gitignore` に `dist/`、`coverage/`、`playwright-report/`、`test-results/` を追加する
+- [x] T1.1.1 Vite の React + TypeScript テンプレートでプロジェクトを作成し、既存の docs/・.steering/・CLAUDE.md と共存させる
+- [x] T1.1.2 依存関係を追加する（react-router、dexie、dexie-react-hooks、zustand、zod、clsx、@types/youtube）
+- [x] T1.1.3 `tsconfig.json` に `strict`、`noUncheckedIndexedAccess`、`exactOptionalPropertyTypes`、パスエイリアス `@/` を設定する（vite.config.ts にも反映）
+- [x] T1.1.4 TypeScript 7・Vite 8 と各プラグインの相性を確認する。問題があれば1つ前のメジャーバージョンに下げ、architecture.md の更新を提案する → typescript-eslint が TS 7 未対応のため TS 6.0 を採用し、architecture.md を更新
+- [x] T1.1.5 `.gitignore` に `dist/`、`coverage/`、`playwright-report/`、`test-results/` を追加する
 
 ### 1.2 ツール設定
 
-- [ ] T1.2.1 Tailwind CSS 4 を導入し、`src/index.css` にデザイントークン（development-guidelines.md 4.2）を明暗それぞれ定義する
-- [ ] T1.2.2 ESLint を設定する（typescript-eslint、react-hooks、`dangerouslySetInnerHTML` の禁止、層の依存ルール repository-structure.md 3章）
-- [ ] T1.2.3 Prettier と prettier-plugin-tailwindcss を設定する
-- [ ] T1.2.4 Vitest を設定する（jsdom、Testing Library、fake-indexeddb、`src/test/setup.ts`、カバレッジ）
-- [ ] T1.2.5 Playwright を設定する（chromium・webkit、1024×768、`npm run preview` を起動して実行）
-- [ ] T1.2.6 npm スクリプトを architecture.md 6.1 のとおりに定義する
+- [x] T1.2.1 Tailwind CSS 4 を導入し、`src/index.css` にデザイントークン（development-guidelines.md 4.2）を明暗それぞれ定義する
+- [x] T1.2.2 ESLint を設定する（typescript-eslint、react-hooks、`dangerouslySetInnerHTML` の禁止、層の依存ルール repository-structure.md 3章）
+- [x] T1.2.3 Prettier と prettier-plugin-tailwindcss を設定する
+- [x] T1.2.4 Vitest を設定する（jsdom、Testing Library、fake-indexeddb、`src/test/setup.ts`、カバレッジ）
+- [x] T1.2.5 Playwright を設定する（chromium・webkit、1024×768、`npm run preview` を起動して実行）
+- [x] T1.2.6 npm スクリプトを architecture.md 6.1 のとおりに定義する
 
 ### 1.3 骨組み
 
-- [ ] T1.3.1 `components/ui/`（Button、Modal、Toast、ConfirmDialog、OptionButtonGroup）を作る
-- [ ] T1.3.2 `Layout` とルーティング（architecture.md 2.4 の5パス＋NotFound）を作り、各ページは仮の見出しだけ表示する
-- [ ] T1.3.3 分析画面・設定画面を `React.lazy` で遅延読み込みにする
-- [ ] T1.3.4 Error Boundary を作る（エラー画面に「データを書き出す」ボタンを置く。ボタンの処理はフェーズ5でつなぐ）
+- [x] T1.3.1 `components/ui/`（Button、Modal、Toast、ConfirmDialog、OptionButtonGroup）を作る
+- [x] T1.3.2 `Layout` とルーティング（architecture.md 2.4 の5パス＋NotFound）を作り、各ページは仮の見出しだけ表示する
+- [x] T1.3.3 分析画面・設定画面を `React.lazy` で遅延読み込みにする
+- [x] T1.3.4 Error Boundary を作る（エラー画面に「データを書き出す」ボタンを置く。ボタンの処理はフェーズ5でつなぐ）
 
 **フェーズ1の完了条件**
-- [ ] 空の5画面を行き来できる
-- [ ] `npm run lint`、`typecheck`、`test`、`build` が通る
-- [ ] 明るい表示・ダーク表示でレイアウトの背景と文字色が切り替わる
+- [x] 空の5画面を行き来できる
+- [x] `npm run lint`、`typecheck`、`test`、`build` が通る
+- [x] 明るい表示・ダーク表示でレイアウトの背景と文字色が切り替わる
 
 ---
 
