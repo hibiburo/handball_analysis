@@ -18,7 +18,7 @@
 | フェーズ | 状態 |
 |---|---|
 | 1 開発基盤 | 完了（TypeScript は 6.0 を採用。T1.1.4 参照） |
-| 2 ドメイン・保存層 | 未着手 |
+| 2 ドメイン・保存層 | 完了（テスト143件、domain カバレッジ 行100%・分岐99%） |
 | 3 GK・試合・記録 | 未着手 |
 | 4 分析 | 未着手 |
 | 5 書き出し・取り込み、データ保護 | 未着手 |
@@ -63,35 +63,42 @@
 
 ### 2.1 ドメイン層
 
-- [ ] T2.1.1 `domain/enums.ts`: 列挙値と表示名（glossary.md 3章と一字一句一致させる）
-- [ ] T2.1.2 `domain/schemas.ts` と `domain/types.ts`: Zod スキーマと型
-- [ ] T2.1.3 `domain/validation.ts`: V1〜V7 と、結果ごとのコース・GK対応の必須/可否 ＋ テスト
-- [ ] T2.1.4 `domain/youtube.ts`: URL 解析 ＋ テスト
-- [ ] T2.1.5 `domain/stats/metrics.ts` ＋ テスト
-- [ ] T2.1.6 `domain/stats/filter.ts` ＋ テスト
-- [ ] T2.1.7 `domain/stats/heatmap.ts` ＋ テスト
-- [ ] T2.1.8 集計の性能テスト（1万件で `applyFilter` + `buildGoalHeatmap` が 100ms 以内）
-- [ ] T2.1.9 `domain/transfer/`（exportJson、importJson、migrations）＋ テスト
-- [ ] T2.1.10 `lib/`（id、time、download）＋ テスト
-- [ ] T2.1.11 `src/test/factories.ts`（buildGoalkeeper、buildMatch、buildShot）
+- [x] T2.1.1 `domain/enums.ts`: 列挙値と表示名（glossary.md 3章と一字一句一致させる）
+- [x] T2.1.2 `domain/schemas.ts` と `domain/types.ts`: Zod スキーマと型
+- [x] T2.1.3 `domain/validation.ts`: V1〜V7 と、結果ごとのコース・GK対応の必須/可否 ＋ テスト
+- [x] T2.1.4 `domain/youtube.ts`: URL 解析 ＋ テスト
+- [x] T2.1.5 `domain/stats/metrics.ts` ＋ テスト
+- [x] T2.1.6 `domain/stats/filter.ts` ＋ テスト
+- [x] T2.1.7 `domain/stats/heatmap.ts` ＋ テスト
+- [x] T2.1.8 集計の性能テスト（1万件で `applyFilter` + `buildGoalHeatmap` が 100ms 以内）
+- [x] T2.1.9 `domain/transfer/`（exportJson、importJson、migrations）＋ テスト
+- [x] T2.1.10 `lib/`（id、time、download）＋ テスト
+- [x] T2.1.11 `src/test/factories.ts`（buildGoalkeeper、buildMatch、buildShot）
 
 ### 2.2 データ保存層
 
-- [ ] T2.2.1 `db/database.ts`: Dexie の定義（design.md 2.2）
-- [ ] T2.2.2 `goalkeeperRepository` ＋ テスト（連動削除を含む）
-- [ ] T2.2.3 `matchRepository` ＋ テスト（紐づけの差分更新、担当シュートがあるGKの解除拒否、連動削除）
-- [ ] T2.2.4 `shotRepository` ＋ テスト（`restore` を含む）
-- [ ] T2.2.5 `settingsRepository` ＋ テスト（未保存時の既定値）
-- [ ] T2.2.6 `dataTransferService` ＋ テスト（書き出し3種、取り込みのプレビュー、上書き/スキップ、途中失敗時のロールバック）
+- [x] T2.2.1 `db/database.ts`: Dexie の定義（design.md 2.2）
+- [x] T2.2.2 `goalkeeperRepository` ＋ テスト（連動削除を含む）
+- [x] T2.2.3 `matchRepository` ＋ テスト（紐づけの差分更新、担当シュートがあるGKの解除拒否、連動削除）
+- [x] T2.2.4 `shotRepository` ＋ テスト（`restore` を含む）
+- [x] T2.2.5 `settingsRepository` ＋ テスト（未保存時の既定値）
+- [x] T2.2.6 `dataTransferService` ＋ テスト（書き出し3種、取り込みのプレビュー、上書き/スキップ、途中失敗時のロールバック）
 
 ### 2.3 フックとストア
 
-- [ ] T2.3.1 `hooks/useGoalkeepers`、`useMatches`、`useShots`、`useSettings`（`useLiveQuery`）
-- [ ] T2.3.2 `stores/analysisFilterStore`、`stores/shotFormStore`（`persist` で localStorage に保存）
+- [x] T2.3.1 `hooks/useGoalkeepers`、`useMatches`、`useShots`、`useSettings`（`useLiveQuery`）
+- [x] T2.3.2 `stores/analysisFilterStore`、`stores/shotFormStore`（`persist` で localStorage に保存）
 
 **フェーズ2の完了条件**
-- [ ] すべての単体テストが通る
-- [ ] `domain/` のカバレッジが 90% 以上
+- [x] すべての単体テストが通る
+- [x] `domain/` のカバレッジが 90% 以上
+
+**design.md からの変更点（実装時の判断）**
+- `applyFilter(shots, criteria)` は試合の情報を使わないため、引数から `matches` を外した
+- 設定の既定値 `defaultSettings` を `domain/schemas.ts` に置いた
+- 書き出し・取り込みの操作用に `hooks/useDataTransfer.ts` を、テスト用DBの作成に `src/test/db.ts` を追加した
+- `Result` 型を `lib/result.ts` に置いた（ドメイン層と Repository の両方で使うため）
+- Repository は `goalkeeperRepository(db)` のようにDBを受け取る関数とし、フックでは `appDb` を渡したものを使う
 
 ---
 

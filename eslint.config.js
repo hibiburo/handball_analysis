@@ -65,6 +65,11 @@ export default defineConfig([
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
+      // 分割代入で特定のプロパティを取り除くときの `_` は使わないことが意図なので許可する
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', ignoreRestSiblings: true },
+      ],
       'no-restricted-syntax': [
         'error',
         {
