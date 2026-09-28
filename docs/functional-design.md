@@ -470,7 +470,7 @@ erDiagram
 |---|---|---|
 | goalkeepers | id | teamName |
 | matches | id | date |
-| matchGoalkeepers | [matchId, goalkeeperId] | goalkeeperId |
+| matchGoalkeepers | [matchId, goalkeeperId] | goalkeeperId, matchId |
 | shots | id | matchId, goalkeeperId, [matchId, videoTime] |
 | settings | key（固定値 `"app"`） | − |
 

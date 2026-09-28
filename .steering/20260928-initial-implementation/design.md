@@ -2,7 +2,7 @@
 
 - 作業ディレクトリ: `.steering/20260928-initial-implementation/`
 - 作成日: 2026-09-28
-- ステータス: レビュー待ち
+- ステータス: 承認済み（2026-09-28）
 - 前提: [requirements.md](./requirements.md)（承認済み）
 
 ---
