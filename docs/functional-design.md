@@ -425,7 +425,7 @@ erDiagram
         number goalCell "1〜9（条件付き必須）"
         string shotType "任意"
         string result "結果"
-        string gkAction "任意（セーブ時のみ）"
+        string goalkeeperAction "任意（セーブ時のみ）"
         string shooterHand "任意"
         string shooterPosition "任意"
         string situation "任意"
@@ -448,7 +448,7 @@ erDiagram
 | goalCell | `1`〜`9`（上段左から右へ1・2・3、中段4・5・6、下段7・8・9。シューターから見た向き） |
 | shotType | `jump` ジャンプ、`step` ステップ、`running` ランニング、`diving` 倒れ込み、`lob` ループ、`bounce` バウンド、`spin` スピン、`other` その他 |
 | result | `goal` 失点、`save` セーブ、`post` ポスト・バー、`miss` 枠外、`blocked` DFブロック |
-| gkAction | `hand` 手、`foot` 足、`body` 体、`none` 反応なし |
+| goalkeeperAction | `hand` 手、`foot` 足、`body` 体、`none` 反応なし |
 | shooterPosition | `LW`、`LB`、`CB`、`RB`、`RW`、`PV` |
 | situation | `even` 同数、`power_play` 数的優位、`short_handed` 数的不利 |
 
@@ -494,7 +494,7 @@ graph TD
     Layout --> GoalkeeperDetailPage
     Layout --> RecordPage
     Layout --> AnalysisPage
-    Layout --> DataSettingsPage
+    Layout --> SettingsPage
 
     GoalkeeperListPage --> GoalkeeperForm
     GoalkeeperListPage --> BackupReminder
@@ -543,8 +543,8 @@ graph TD
 将来ログイン・チーム共有を追加する場合に備え、データアクセスは Repository インターフェース経由に限定し、IndexedDB 実装をサーバーAPI実装に差し替えられるようにしておく。
 
 ```
-interface GoalkeeperRepository { list(); get(id); save(gk); delete(id); }
-interface MatchRepository      { listByGoalkeeper(gkId); get(id); save(match, gkIds); delete(id); }
-interface ShotRepository       { listByMatch(matchId); listByGoalkeeper(gkId, matchIds?); save(shot); delete(id); }
+interface GoalkeeperRepository { list(); get(id); save(goalkeeper); delete(id); }
+interface MatchRepository      { listByGoalkeeper(goalkeeperId); get(id); save(match, goalkeeperIds); delete(id); }
+interface ShotRepository       { listByMatch(matchId); listByGoalkeeper(goalkeeperId, matchIds?); save(shot); delete(id); }
 interface DataTransferService  { exportAll(); exportGoalkeeper(id); exportMatch(id); importFile(file, onConflict); }
 ```
