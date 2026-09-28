@@ -2,7 +2,7 @@
 
 - バージョン: 0.1（初版ドラフト）
 - 作成日: 2026-09-28
-- ステータス: レビュー待ち
+- ステータス: 承認済み（2026-09-28）
 - 前提: [product-requirements.md](./product-requirements.md)、[functional-design.md](./functional-design.md)、[development-guidelines.md](./development-guidelines.md)（いずれも承認済み）
 
 本書は、ドキュメント・画面の表示・コードで使う言葉の **正** とする。
