@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { GoalkeeperForm } from '@/components/goalkeeper/GoalkeeperForm';
+import { BackupReminder } from '@/components/layout/BackupReminder';
 import { Button } from '@/components/ui/Button';
 import { handednessLabels } from '@/domain/enums';
 import { useGoalkeeperSummaries } from '@/hooks/useGoalkeepers';
@@ -34,6 +35,8 @@ export function GoalkeeperListPage() {
           ＋ GKを追加
         </Button>
       </div>
+
+      <BackupReminder />
 
       {summaries === undefined ? (
         <p className="text-muted">読み込み中…</p>

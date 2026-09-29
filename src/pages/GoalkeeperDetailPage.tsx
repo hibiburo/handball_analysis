@@ -9,6 +9,7 @@ import { useToast } from '@/components/ui/Toast';
 import { handednessLabels } from '@/domain/enums';
 import { calcMetrics, formatRate } from '@/domain/stats/metrics';
 import type { Match } from '@/domain/types';
+import { downloadGoalkeeperData, downloadMatchData } from '@/hooks/useDataTransfer';
 import { goalkeeperActions, useGoalkeeper } from '@/hooks/useGoalkeepers';
 import { matchActions, useMatchesByGoalkeeper } from '@/hooks/useMatches';
 import { useShotsByGoalkeeper } from '@/hooks/useShots';
@@ -46,6 +47,15 @@ export function GoalkeeperDetailPage() {
         </Link>
       </div>
     );
+  }
+
+  async function exportData(run: () => Promise<void>) {
+    try {
+      await run();
+      showToast('書き出しました', { tone: 'success' });
+    } catch {
+      showToast('書き出せませんでした。もう一度お試しください。', { tone: 'error' });
+    }
   }
 
   async function requestDeleteGoalkeeper() {
@@ -88,6 +98,9 @@ export function GoalkeeperDetailPage() {
           </span>
         </h1>
         <div className="ml-auto flex gap-1">
+          <Button size="sm" variant="ghost" onClick={() => void exportData(() => downloadGoalkeeperData(goalkeeper))}>
+            書き出し
+          </Button>
           <Button size="sm" onClick={() => setIsGoalkeeperFormOpen(true)}>
             編集
           </Button>
@@ -130,6 +143,7 @@ export function GoalkeeperDetailPage() {
             shotCountByMatch={shotCountByMatch}
             onEdit={(match) => setMatchForm({ match })}
             onDelete={requestDeleteMatch}
+            onExport={(match) => void exportData(() => downloadMatchData(match))}
           />
         )}
       </section>

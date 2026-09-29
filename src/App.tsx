@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider, type RouteObject } from 'react-rou
 import { ErrorBoundary } from '@/components/layout/ErrorBoundary';
 import { Layout } from '@/components/layout/Layout';
 import { ToastProvider } from '@/components/ui/Toast';
+import { downloadAllData } from '@/hooks/useDataTransfer';
 import { GoalkeeperDetailPage } from '@/pages/GoalkeeperDetailPage';
 import { GoalkeeperListPage } from '@/pages/GoalkeeperListPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
@@ -35,7 +36,7 @@ export function App() {
   const [router] = useState(() => createBrowserRouter(routes));
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary onExportData={() => void downloadAllData()}>
       <ToastProvider>
         <RouterProvider router={router} />
       </ToastProvider>
