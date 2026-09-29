@@ -63,10 +63,22 @@ function findDuplicateIds(file: ExportFile): string[] {
       seen.add(id);
     }
   };
-  check('goalkeepers', file.goalkeepers.map((g) => g.id));
-  check('matches', file.matches.map((m) => m.id));
-  check('shots', file.shots.map((s) => s.id));
-  check('matchGoalkeepers', file.matchGoalkeepers.map((mg) => `${mg.matchId}+${mg.goalkeeperId}`));
+  check(
+    'goalkeepers',
+    file.goalkeepers.map((g) => g.id),
+  );
+  check(
+    'matches',
+    file.matches.map((m) => m.id),
+  );
+  check(
+    'shots',
+    file.shots.map((s) => s.id),
+  );
+  check(
+    'matchGoalkeepers',
+    file.matchGoalkeepers.map((mg) => `${mg.matchId}+${mg.goalkeeperId}`),
+  );
   return issues;
 }
 
@@ -115,9 +127,18 @@ export function buildImportPreview(file: ExportFile, existing: ExistingIds): Imp
   return {
     counts: { goalkeepers: file.goalkeepers.length, matches: file.matches.length, shots: file.shots.length },
     conflicts: {
-      goalkeepers: countIn(file.goalkeepers.map((g) => g.id), existing.goalkeeperIds),
-      matches: countIn(file.matches.map((m) => m.id), existing.matchIds),
-      shots: countIn(file.shots.map((s) => s.id), existing.shotIds),
+      goalkeepers: countIn(
+        file.goalkeepers.map((g) => g.id),
+        existing.goalkeeperIds,
+      ),
+      matches: countIn(
+        file.matches.map((m) => m.id),
+        existing.matchIds,
+      ),
+      shots: countIn(
+        file.shots.map((s) => s.id),
+        existing.shotIds,
+      ),
     },
   };
 }

@@ -88,4 +88,9 @@ export default defineConfig([
     files: ['*.config.{ts,js}', 'e2e/**/*.ts'],
     languageOptions: { globals: globals.node },
   },
+  {
+    // Playwright の fixture の `use` を React のフックと誤判定するため、E2E では React のルールを外す
+    files: ['e2e/**/*.ts'],
+    rules: { 'react-hooks/rules-of-hooks': 'off' },
+  },
 ]);

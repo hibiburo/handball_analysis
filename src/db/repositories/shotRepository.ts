@@ -9,10 +9,7 @@ export function shotRepository(db: AppDatabase) {
   return {
     /** 試合のシュートを動画時刻の順に返す */
     listByMatch(matchId: string): Promise<Shot[]> {
-      return db.shots
-        .where('[matchId+videoTime]')
-        .between([matchId, Dexie.minKey], [matchId, Dexie.maxKey])
-        .toArray();
+      return db.shots.where('[matchId+videoTime]').between([matchId, Dexie.minKey], [matchId, Dexie.maxKey]).toArray();
     },
 
     listByGoalkeeper(goalkeeperId: string): Promise<Shot[]> {

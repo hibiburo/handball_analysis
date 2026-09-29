@@ -88,14 +88,23 @@ type CourtZoneGeometry = {
   labelY: number;
 };
 
-function geometry(zone: ShotZone, r1: number, r2: number, a1: number, a2: number, labelR: number): CourtZoneGeometry {
-  const [labelX, labelY] = point(labelR, (a1 + a2) / 2);
+function geometry(
+  zone: ShotZone,
+  r1: number,
+  r2: number,
+  a1: number,
+  a2: number,
+  label: number | Point,
+): CourtZoneGeometry {
+  // label は文字の位置。半径を渡すと角度の中央に置き、座標を渡すとその位置に置く
+  const [labelX, labelY] = typeof label === 'number' ? point(label, (a1 + a2) / 2) : label;
   return { zone, path: sectorPath(r1, r2, a1, a2), labelX, labelY };
 }
 
 const courtZones: CourtZoneGeometry[] = [
-  geometry('lw', R_6M, R_FAR, -90, -WING_ANGLE, 175),
-  geometry('rw', R_6M, R_FAR, WING_ANGLE, 90, 175),
+  // ウイングはゴールライン際の隅の狭い領域のため、文字の位置を個別に指定する
+  geometry('lw', R_6M, R_FAR, -90, -WING_ANGLE, [44, 44]),
+  geometry('rw', R_6M, R_FAR, WING_ANGLE, 90, [VIEW_WIDTH - 44, 44]),
   geometry('pivot_l', R_6M, R_PIVOT_OUTER, -WING_ANGLE, -CENTER_ANGLE, (R_6M + R_PIVOT_OUTER) / 2),
   geometry('pivot_c', R_6M, R_PIVOT_OUTER, -CENTER_ANGLE, CENTER_ANGLE, (R_6M + R_PIVOT_OUTER) / 2),
   geometry('pivot_r', R_6M, R_PIVOT_OUTER, CENTER_ANGLE, WING_ANGLE, (R_6M + R_PIVOT_OUTER) / 2),
@@ -142,7 +151,11 @@ export function CourtDiagram({ getZoneProps, className }: CourtDiagramProps) {
               aria-label={props.ariaLabel}
               aria-pressed={interactive ? (props.isPressed ?? false) : undefined}
               tabIndex={interactive ? 0 : undefined}
-              className={interactive ? 'cursor-pointer outline-none [&:focus-visible>path]:stroke-primary [&:focus-visible>path]:stroke-[4]' : undefined}
+              className={
+                interactive
+                  ? 'cursor-pointer outline-none [&:focus-visible>path]:stroke-primary [&:focus-visible>path]:stroke-[4]'
+                  : undefined
+              }
               onClick={props.onSelect}
               onKeyDown={(event) => {
                 if (interactive && (event.key === 'Enter' || event.key === ' ')) {

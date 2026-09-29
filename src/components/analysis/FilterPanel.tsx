@@ -46,7 +46,12 @@ const sections = [
   { key: 'goalCells', label: 'コース', values: goalCells, labels: goalCellLabels } satisfies Section<'goalCells'>,
   { key: 'shotTypes', label: 'シュート種別', values: shotTypes, labels: shotTypeLabels } satisfies Section<'shotTypes'>,
   { key: 'results', label: '結果', values: shotResults, labels: shotResultLabels } satisfies Section<'results'>,
-  { key: 'shooterHands', label: '利き手', values: handednesses, labels: handednessLabels } satisfies Section<'shooterHands'>,
+  {
+    key: 'shooterHands',
+    label: '利き手',
+    values: handednesses,
+    labels: handednessLabels,
+  } satisfies Section<'shooterHands'>,
   {
     key: 'shooterPositions',
     label: 'ポジション',
@@ -71,15 +76,27 @@ export function FilterPanel({ goalkeeperId, matches }: FilterPanelProps) {
     <div className="flex flex-col gap-3" aria-label="絞り込み" role="region">
       <div className="flex items-center justify-between">
         <h2 className="font-bold">絞り込み</h2>
-        <Button size="sm" variant="ghost" disabled={!hasActiveCriteria(filter.criteria)} onClick={() => clearCriteria(goalkeeperId)}>
+        <Button
+          size="sm"
+          variant="ghost"
+          disabled={!hasActiveCriteria(filter.criteria)}
+          onClick={() => clearCriteria(goalkeeperId)}
+        >
           クリア
         </Button>
       </div>
 
-      <FilterSection label="試合" activeCount={filter.excludedMatchIds.length > 0 ? matches.length - filter.excludedMatchIds.length : 0} defaultOpen>
+      <FilterSection
+        label="試合"
+        activeCount={filter.excludedMatchIds.length > 0 ? matches.length - filter.excludedMatchIds.length : 0}
+        defaultOpen
+      >
         <div className="flex flex-col gap-1">
           {matches.map((match) => (
-            <label key={match.id} className="flex min-h-11 cursor-pointer items-center gap-2 rounded px-1 text-sm hover:bg-surface-hover">
+            <label
+              key={match.id}
+              className="flex min-h-11 cursor-pointer items-center gap-2 rounded px-1 text-sm hover:bg-surface-hover"
+            >
               <input
                 type="checkbox"
                 className="size-5 shrink-0"
@@ -114,7 +131,11 @@ export function FilterPanel({ goalkeeperId, matches }: FilterPanelProps) {
                         : 'border-border bg-surface hover:bg-surface-hover',
                     )}
                     onClick={() =>
-                      toggleCriteriaValue(goalkeeperId, section.key, value as never /* 項目ごとの値の型は sections で保証 */)
+                      toggleCriteriaValue(
+                        goalkeeperId,
+                        section.key,
+                        value as never /* 項目ごとの値の型は sections で保証 */,
+                      )
                     }
                   >
                     {(section.labels as Record<string | number, string>)[value]}
@@ -152,7 +173,9 @@ function FilterSection({
         <span>
           {isOpen ? '▾' : '▸'} {label}
         </span>
-        {activeCount > 0 && <span className="rounded-full bg-primary px-2 text-xs text-primary-foreground">{activeCount}</span>}
+        {activeCount > 0 && (
+          <span className="rounded-full bg-primary px-2 text-xs text-primary-foreground">{activeCount}</span>
+        )}
       </button>
       {isOpen && children}
     </section>

@@ -1,13 +1,7 @@
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
-import {
-  goalkeeperActionLabels,
-  shotResultLabels,
-  shotTypeLabels,
-  situationLabels,
-  zoneLabels,
-} from '@/domain/enums';
+import { goalkeeperActionLabels, shotResultLabels, shotTypeLabels, situationLabels, zoneLabels } from '@/domain/enums';
 import type { Match, Shot } from '@/domain/types';
 import { useVideoPlayer } from '@/hooks/useVideoPlayer';
 import { formatVideoTime } from '@/lib/time';

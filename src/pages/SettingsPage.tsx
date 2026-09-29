@@ -179,7 +179,13 @@ function ImportSection() {
                 {state.preview.conflicts.matches}・シュート {state.preview.conflicts.shots}）。
               </legend>
               <label className="flex min-h-11 items-center gap-2">
-                <input type="radio" name="policy" className="size-5" checked={policy === 'skip'} onChange={() => setPolicy('skip')} />
+                <input
+                  type="radio"
+                  name="policy"
+                  className="size-5"
+                  checked={policy === 'skip'}
+                  onChange={() => setPolicy('skip')}
+                />
                 スキップする（今あるデータを残す）
               </label>
               <label className="flex min-h-11 items-center gap-2">
@@ -211,18 +217,33 @@ function ImportSection() {
 
 type NumberSettingKey = 'highlightPreSeconds' | 'highlightPostSeconds' | 'lowSampleThreshold';
 
-const numberSettings: { key: NumberSettingKey; label: string; hint: string; min: number; max: number; unit: string }[] = [
-  { key: 'highlightPreSeconds', label: 'シーン再生の前余白', hint: '記録時刻の何秒前から再生するか', min: 0, max: 30, unit: '秒' },
-  { key: 'highlightPostSeconds', label: 'シーン再生の後余白', hint: '記録時刻の何秒後まで再生するか', min: 0, max: 30, unit: '秒' },
-  {
-    key: 'lowSampleThreshold',
-    label: '参考値にする枠内シュート数',
-    hint: 'ヒートマップで、枠内シュートがこの本数未満のコースを参考値として表示する',
-    min: 1,
-    max: 50,
-    unit: '本',
-  },
-];
+const numberSettings: { key: NumberSettingKey; label: string; hint: string; min: number; max: number; unit: string }[] =
+  [
+    {
+      key: 'highlightPreSeconds',
+      label: 'シーン再生の前余白',
+      hint: '記録時刻の何秒前から再生するか',
+      min: 0,
+      max: 30,
+      unit: '秒',
+    },
+    {
+      key: 'highlightPostSeconds',
+      label: 'シーン再生の後余白',
+      hint: '記録時刻の何秒後まで再生するか',
+      min: 0,
+      max: 30,
+      unit: '秒',
+    },
+    {
+      key: 'lowSampleThreshold',
+      label: '参考値にする枠内シュート数',
+      hint: 'ヒートマップで、枠内シュートがこの本数未満のコースを参考値として表示する',
+      min: 1,
+      max: 50,
+      unit: '本',
+    },
+  ];
 
 function SettingsSection() {
   const settings = useSettings();
@@ -247,7 +268,9 @@ function SettingsSection() {
         />
         <span>
           記録後に自動で再生を再開する
-          <span className="block text-xs text-muted">オンにすると、一時停止 → 位置 → コース → 結果 → 記録 の5タップで次のシュートへ進めます</span>
+          <span className="block text-xs text-muted">
+            オンにすると、一時停止 → 位置 → コース → 結果 → 記録 の5タップで次のシュートへ進めます
+          </span>
         </span>
       </label>
       {numberSettings.map(({ key, ...item }) => (
@@ -331,7 +354,9 @@ function StorageSection() {
           <dt className="text-muted">使用量</dt>
           <dd>
             {status.usage !== undefined ? formatBytes(status.usage) : '不明'}
-            {status.quota !== undefined && <span className="text-muted">（上限の目安 {formatBytes(status.quota)}）</span>}
+            {status.quota !== undefined && (
+              <span className="text-muted">（上限の目安 {formatBytes(status.quota)}）</span>
+            )}
           </dd>
           <dt className="text-muted">データの永続化</dt>
           <dd>

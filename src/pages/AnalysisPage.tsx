@@ -70,7 +70,8 @@ export function AnalysisPage() {
   const playingMatch: Match | undefined = playingShot ? matchesById.get(playingShot.matchId) : undefined;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    // 広い画面では画面の高さに収め、絞り込み・ヒートマップ・シーンの各列をそれぞれスクロールさせる（記録画面と同じ）
+    <div className="flex min-h-0 flex-1 flex-col lg:h-[calc(100dvh-3.5rem)] lg:flex-none">
       <div className="flex flex-wrap items-center gap-2 border-b border-border px-3 py-2">
         <Link
           to={`/goalkeepers/${goalkeeper.id}`}
@@ -94,7 +95,7 @@ export function AnalysisPage() {
           まだ試合が登録されていません。GK詳細から試合を追加してシュートを記録してください。
         </p>
       ) : (
-        <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[15rem_minmax(0,1fr)_17rem]">
+        <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[15rem_minmax(0,1fr)_17rem] lg:grid-rows-[minmax(0,1fr)]">
           <aside className="overflow-y-auto border-border p-3 lg:border-r">
             <FilterPanel goalkeeperId={goalkeeper.id} matches={matches} />
           </aside>

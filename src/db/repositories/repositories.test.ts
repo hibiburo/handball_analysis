@@ -39,7 +39,15 @@ async function createMatch(goalkeeperIds: string[], date = '2026-09-20'): Promis
 }
 
 function shotInput(match: Match, goalkeeper: Goalkeeper, overrides: Partial<ShotInput> = {}): ShotInput {
-  return { matchId: match.id, goalkeeperId: goalkeeper.id, videoTime: 60, zone: 'lb', result: 'goal', goalCell: 1, ...overrides };
+  return {
+    matchId: match.id,
+    goalkeeperId: goalkeeper.id,
+    videoTime: 60,
+    zone: 'lb',
+    result: 'goal',
+    goalCell: 1,
+    ...overrides,
+  };
 }
 
 describe('goalkeeperRepository', () => {
@@ -57,7 +65,9 @@ describe('goalkeeperRepository', () => {
   });
 
   it('不正な入力は保存せずに ZodError を投げる', async () => {
-    await expect(goalkeepers.save({ name: '', teamName: '○○大学', handedness: 'right' })).rejects.toBeInstanceOf(ZodError);
+    await expect(goalkeepers.save({ name: '', teamName: '○○大学', handedness: 'right' })).rejects.toBeInstanceOf(
+      ZodError,
+    );
     expect(await goalkeepers.list()).toEqual([]);
   });
 
@@ -181,7 +191,9 @@ describe('shotRepository', () => {
   it('結果とコースの組み合わせが不正なシュートは保存しない', async () => {
     const goalkeeper = await createGoalkeeper();
     const match = await createMatch([goalkeeper.id]);
-    await expect(shots.save(shotInput(match, goalkeeper, { result: 'miss', goalCell: 3 }))).rejects.toBeInstanceOf(ZodError);
+    await expect(shots.save(shotInput(match, goalkeeper, { result: 'miss', goalCell: 3 }))).rejects.toBeInstanceOf(
+      ZodError,
+    );
   });
 
   it('更新では登録日時を保つ', async () => {
@@ -224,7 +236,11 @@ describe('settingsRepository', () => {
   it('一部の設定だけを更新できる', async () => {
     await settings.update({ highlightPreSeconds: 5 });
     await settings.update({ autoResumeAfterRecord: false });
-    expect(await settings.get()).toMatchObject({ highlightPreSeconds: 5, autoResumeAfterRecord: false, highlightPostSeconds: 2 });
+    expect(await settings.get()).toMatchObject({
+      highlightPreSeconds: 5,
+      autoResumeAfterRecord: false,
+      highlightPostSeconds: 2,
+    });
   });
 
   it('範囲外の値は保存しない', async () => {

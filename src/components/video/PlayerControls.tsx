@@ -14,7 +14,14 @@ type PlayerControlsProps = {
 };
 
 /** 再生・停止、±2秒・±5秒、再生速度、現在時刻（functional-design.md 8.3） */
-export function PlayerControls({ controls, isReady, isPlaying, currentTime, duration, playbackRate }: PlayerControlsProps) {
+export function PlayerControls({
+  controls,
+  isReady,
+  isPlaying,
+  currentTime,
+  duration,
+  playbackRate,
+}: PlayerControlsProps) {
   return (
     <div className="flex flex-wrap items-center gap-1.5">
       <Button size="sm" disabled={!isReady} aria-label="5秒戻る" onClick={() => controls.seekBy(-5)}>

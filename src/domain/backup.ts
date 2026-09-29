@@ -4,10 +4,7 @@ import { daysBetween } from '@/lib/time';
 export const BACKUP_WARNING_DAYS = 7;
 
 export type BackupStatus =
-  | { kind: 'no_data' }
-  | { kind: 'never' }
-  | { kind: 'stale'; days: number }
-  | { kind: 'recent'; days: number };
+  { kind: 'no_data' } | { kind: 'never' } | { kind: 'stale'; days: number } | { kind: 'recent'; days: number };
 
 /**
  * バックアップの状態を判定する。

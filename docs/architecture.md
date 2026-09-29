@@ -169,7 +169,7 @@ graph TD
 | Content Security Policy | `vercel.json` のヘッダーで設定する（下記） |
 | 依存ライブラリ | Dependabot で更新を検知する。CI で `npm audit --audit-level=high` を実行する |
 
-**Content Security Policy（案）**
+**Content Security Policy**（`vercel.json` で設定）
 
 ```
 default-src 'self';
@@ -179,9 +179,13 @@ img-src 'self' data: https://i.ytimg.com;
 style-src 'self' 'unsafe-inline';
 connect-src 'self';
 worker-src 'self';
+object-src 'none';
+base-uri 'self';
+form-action 'self';
+frame-ancestors 'none';
 ```
 
-※ YouTube の埋め込みに必要なドメインは、実装時に動作確認して調整する。
+※ 2026-09-29 初回実装で、この CSP を付けた状態で実際の YouTube 動画の埋め込み・再生ができ、CSP 違反が出ないことを確認した。案に `object-src`・`base-uri`・`form-action`・`frame-ancestors` を追加している。
 
 ---
 

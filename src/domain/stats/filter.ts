@@ -1,13 +1,4 @@
-import type {
-  GoalCell,
-  Half,
-  Handedness,
-  ShooterPosition,
-  ShotResult,
-  ShotType,
-  ShotZone,
-  Situation,
-} from '../enums';
+import type { GoalCell, Half, Handedness, ShooterPosition, ShotResult, ShotType, ShotZone, Situation } from '../enums';
 import type { Shot } from '../types';
 
 /**

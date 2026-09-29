@@ -10,7 +10,13 @@ import {
   shotZones,
   situations,
 } from './enums';
-import { isGoalCellAllowed, isGoalCellRequired, isGoalkeeperActionAllowed, MEMO_MAX_LENGTH, NAME_MAX_LENGTH } from './validation';
+import {
+  isGoalCellAllowed,
+  isGoalCellRequired,
+  isGoalkeeperActionAllowed,
+  MEMO_MAX_LENGTH,
+  NAME_MAX_LENGTH,
+} from './validation';
 import { YOUTUBE_VIDEO_ID_PATTERN } from './youtube';
 
 /**

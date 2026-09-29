@@ -100,12 +100,19 @@ export function ShotForm({
   const { showToast } = useToast();
   const store = useShotFormStore();
   const [draft, setDraft] = useState<ShotDraft>(() =>
-    initialDraft(matchId, goalkeepers, editingShot, store.lastGoalkeeperIdByMatch[matchId], store.lastHalfByMatch[matchId]),
+    initialDraft(
+      matchId,
+      goalkeepers,
+      editingShot,
+      store.lastGoalkeeperIdByMatch[matchId],
+      store.lastHalfByMatch[matchId],
+    ),
   );
   const [isSaving, setIsSaving] = useState(false);
 
   const isEditing = editingShot !== null;
-  const set = <K extends DraftKey>(key: K, value: ShotDraft[K] | undefined) => setDraft((d) => withField(d, key, value));
+  const set = <K extends DraftKey>(key: K, value: ShotDraft[K] | undefined) =>
+    setDraft((d) => withField(d, key, value));
 
   const missing = [
     !draft.goalkeeperId && '担当GK',
@@ -129,15 +136,20 @@ export function ShotForm({
       const saved = await shotActions.save(validated.value);
       store.setLastGoalkeeper(matchId, saved.goalkeeperId);
       store.setLastHalf(matchId, saved.half);
-      showToast(isEditing ? `${formatVideoTime(saved.videoTime)} のシュートを更新しました` : `${formatVideoTime(saved.videoTime)} に記録しました`, {
-        duration: UNDO_DURATION_MS,
-        action: {
-          label: '元に戻す',
-          onAction: () => {
-            void (editingShot ? shotActions.restore(editingShot) : shotActions.delete(saved.id));
+      showToast(
+        isEditing
+          ? `${formatVideoTime(saved.videoTime)} のシュートを更新しました`
+          : `${formatVideoTime(saved.videoTime)} に記録しました`,
+        {
+          duration: UNDO_DURATION_MS,
+          action: {
+            label: '元に戻す',
+            onAction: () => {
+              void (editingShot ? shotActions.restore(editingShot) : shotActions.delete(saved.id));
+            },
           },
         },
-      });
+      );
       // 担当GK・前後半は保持して、次のシュートを入力できる状態に戻す
       setDraft(initialDraft(matchId, goalkeepers, null, saved.goalkeeperId, saved.half));
       onSaved(saved, !isEditing);
@@ -213,10 +225,18 @@ export function ShotForm({
         <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border p-2">
           <span className="text-sm text-muted">動画時刻</span>
           <span className="font-mono font-bold tabular-nums">{formatVideoTime(draft.videoTime)}</span>
-          <Button size="sm" aria-label="0.5秒戻す" onClick={() => set('videoTime', roundVideoTime(Math.max(0, (draft.videoTime ?? 0) - 0.5)))}>
+          <Button
+            size="sm"
+            aria-label="0.5秒戻す"
+            onClick={() => set('videoTime', roundVideoTime(Math.max(0, (draft.videoTime ?? 0) - 0.5)))}
+          >
             −0.5
           </Button>
-          <Button size="sm" aria-label="0.5秒進める" onClick={() => set('videoTime', roundVideoTime((draft.videoTime ?? 0) + 0.5))}>
+          <Button
+            size="sm"
+            aria-label="0.5秒進める"
+            onClick={() => set('videoTime', roundVideoTime((draft.videoTime ?? 0) + 0.5))}
+          >
             +0.5
           </Button>
           <Button size="sm" onClick={() => set('videoTime', roundVideoTime(readCurrentTime()))}>
@@ -229,9 +249,7 @@ export function ShotForm({
         <Button type="submit" variant="primary" className="w-full text-lg" disabled={!canSave}>
           {isEditing ? '更新する' : `記録する ${formatVideoTime(currentTime)}`}
         </Button>
-        {missing.length > 0 && (
-          <p className="mt-1 text-center text-xs text-danger">未入力: {missing.join('、')}</p>
-        )}
+        {missing.length > 0 && <p className="mt-1 text-center text-xs text-danger">未入力: {missing.join('、')}</p>}
         {!isEditing && !isPlayerReady && (
           <p className="mt-1 text-center text-xs text-muted">動画の準備ができると記録できます</p>
         )}
@@ -249,9 +267,15 @@ type ShotDetailFieldsProps = {
 function ShotDetailFields({ draft, set }: ShotDetailFieldsProps) {
   const isOpen = useShotFormStore((s) => s.isDetailOpen);
   const setDetailOpen = useShotFormStore((s) => s.setDetailOpen);
-  const filledCount = [draft.shotType, draft.goalkeeperAction, draft.shooterHand, draft.shooterPosition, draft.situation, draft.gameMinute, draft.memo].filter(
-    (v) => v !== undefined,
-  ).length;
+  const filledCount = [
+    draft.shotType,
+    draft.goalkeeperAction,
+    draft.shooterHand,
+    draft.shooterPosition,
+    draft.situation,
+    draft.gameMinute,
+    draft.memo,
+  ].filter((v) => v !== undefined).length;
 
   return (
     <div className="rounded-lg border border-border">
@@ -261,9 +285,7 @@ function ShotDetailFields({ draft, set }: ShotDetailFieldsProps) {
         className="flex min-h-11 w-full items-center justify-between px-3 text-sm font-bold text-muted"
         onClick={() => setDetailOpen(!isOpen)}
       >
-        <span>
-          {isOpen ? '▾' : '▸'} 詳細（種別・GKの対応など）
-        </span>
+        <span>{isOpen ? '▾' : '▸'} 詳細（種別・GKの対応など）</span>
         {filledCount > 0 && <span className="text-primary">{filledCount}件入力済み</span>}
       </button>
       <div className={clsx('flex flex-col gap-3 px-3 pb-3', !isOpen && 'hidden')}>

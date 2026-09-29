@@ -179,7 +179,10 @@ function MatchFormContent({
           inputMode="url"
           placeholder="https://www.youtube.com/watch?v=..."
           value={youtubeUrl}
-          error={errors['youtubeUrl'] ?? (youtubeUrl.trim() !== '' && !videoId ? 'YouTube の動画のURLではありません' : undefined)}
+          error={
+            errors['youtubeUrl'] ??
+            (youtubeUrl.trim() !== '' && !videoId ? 'YouTube の動画のURLではありません' : undefined)
+          }
           hint={<EmbedStatusHint status={embedStatus} />}
           onChange={(event) => setYoutubeUrl(event.target.value)}
         />
@@ -231,12 +234,7 @@ function MatchFormContent({
  * 動画を埋め込めるかを判定する。
  * 読み込みが完了して「再生待ち」になるか、一定時間エラーがなければ OK とする。
  */
-function useEmbedStatus(
-  videoId: string | undefined,
-  isReady: boolean,
-  state: string,
-  hasError: boolean,
-): EmbedStatus {
+function useEmbedStatus(videoId: string | undefined, isReady: boolean, state: string, hasError: boolean): EmbedStatus {
   const [timedOutVideoId, setTimedOutVideoId] = useState<string | null>(null);
 
   useEffect(() => {

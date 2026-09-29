@@ -37,7 +37,11 @@ export function GoalHeatmap({ heatmap, metric, onMetricChange, selectedCells, on
 
   return (
     <div className="flex flex-col gap-2">
-      <div role="radiogroup" aria-label="表示する指標" className="flex gap-1 self-center rounded-lg bg-surface-hover p-1">
+      <div
+        role="radiogroup"
+        aria-label="表示する指標"
+        className="flex gap-1 self-center rounded-lg bg-surface-hover p-1"
+      >
         {(Object.keys(metricLabels) as HeatmapMetric[]).map((key) => (
           <button
             key={key}

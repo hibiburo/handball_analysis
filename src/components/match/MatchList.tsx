@@ -38,14 +38,29 @@ export function MatchList({ matches, shotCountByMatch, onEdit, onDelete, onExpor
             </span>
           </Link>
           {onExport && (
-            <Button size="sm" variant="ghost" aria-label={`${formatDate(match.date)}の試合を書き出す`} onClick={() => onExport(match)}>
+            <Button
+              size="sm"
+              variant="ghost"
+              aria-label={`${formatDate(match.date)}の試合を書き出す`}
+              onClick={() => onExport(match)}
+            >
               ⤓
             </Button>
           )}
-          <Button size="sm" variant="ghost" aria-label={`${formatDate(match.date)}の試合を編集`} onClick={() => onEdit(match)}>
+          <Button
+            size="sm"
+            variant="ghost"
+            aria-label={`${formatDate(match.date)}の試合を編集`}
+            onClick={() => onEdit(match)}
+          >
             ✎
           </Button>
-          <Button size="sm" variant="ghost" aria-label={`${formatDate(match.date)}の試合を削除`} onClick={() => onDelete(match)}>
+          <Button
+            size="sm"
+            variant="ghost"
+            aria-label={`${formatDate(match.date)}の試合を削除`}
+            onClick={() => onDelete(match)}
+          >
             🗑
           </Button>
         </li>

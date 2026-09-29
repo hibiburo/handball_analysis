@@ -1,5 +1,7 @@
 import clsx from 'clsx';
 import { situationalZones, zoneLabels, type ShotZone } from '@/domain/enums';
+// zoneLabels は凡例とボタンの表示名、courtZoneLabelLines はコート図の中の表示に使う
+import { courtZoneLabelLines } from './courtLabels';
 import { CourtDiagram } from './CourtZoneShape';
 
 type CourtZonePickerProps = {
@@ -25,7 +27,7 @@ export function CourtZonePicker({ value, onChange, isInvalid = false }: CourtZon
           return {
             fillClassName: isSelected ? 'fill-primary' : 'fill-surface hover:fill-surface-hover',
             textClassName: isSelected ? 'fill-primary-foreground' : 'fill-foreground',
-            lines: [zoneLabels[zone]],
+            lines: courtZoneLabelLines(zone),
             ariaLabel: zoneLabels[zone],
             isPressed: isSelected,
             onSelect: () => onChange(zone),

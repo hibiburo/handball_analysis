@@ -210,28 +210,28 @@
 
 ### 6.1 E2E テスト
 
-- [ ] T6.1.1 `e2e/mocks/` に YouTube プレーヤーのモック（`addInitScript` で注入）
-- [ ] T6.1.2 `e2e/record-and-analyze.spec.ts`
-- [ ] T6.1.3 `e2e/export-import.spec.ts`
-- [ ] T6.1.4 Chromium と WebKit の両方で通ることを確認する
+- [x] T6.1.1 `e2e/mocks/` に YouTube プレーヤーのモック（`addInitScript` で注入）
+- [x] T6.1.2 `e2e/record-and-analyze.spec.ts`
+- [x] T6.1.3 `e2e/export-import.spec.ts`
+- [x] T6.1.4 Chromium と WebKit の両方で通ることを確認する
 
 ### 6.2 CI・公開の設定
 
-- [ ] T6.2.1 `.github/workflows/ci.yml`（check ジョブ、e2e ジョブ、失敗時のレポート保存）
-- [ ] T6.2.2 `.github/dependabot.yml`（npm、GitHub Actions）
-- [ ] T6.2.3 `vercel.json`（rewrites、CSP、セキュリティヘッダー）
-- [ ] T6.2.4 `npm run preview` で CSP により YouTube の埋め込みが妨げられないことを確認し、必要なら CSP を調整する（architecture.md 4章も更新）
-- [ ] T6.2.5 README（概要、開発の始め方、npm スクリプト、Vercel 連携の手順）
+- [x] T6.2.1 `.github/workflows/ci.yml`（check ジョブ、e2e ジョブ、失敗時のレポート保存）
+- [x] T6.2.2 `.github/dependabot.yml`（npm、GitHub Actions）
+- [x] T6.2.3 `vercel.json`（rewrites、CSP、セキュリティヘッダー）
+- [x] T6.2.4 `npm run preview` で CSP により YouTube の埋め込みが妨げられないことを確認し、必要なら CSP を調整する（architecture.md 4章も更新）
+- [x] T6.2.5 README（概要、開発の始め方、npm スクリプト、Vercel 連携の手順）
 - [ ] T6.2.6 GitHub にブランチを push し、CI が成功することを確認する
 
 ### 6.3 仕上げ
 
-- [ ] T6.3.1 1024×768 と 1280×800 で全画面の表示・操作を確認する（QC5）
-- [ ] T6.3.2 明るい表示・ダーク表示で全画面を確認する（QC6）
-- [ ] T6.3.3 画面の表示名が glossary.md と一致しているか確認する（AC11）
-- [ ] T6.3.4 タップ領域 44px 以上、`aria-label`、フォーカスリングを確認する
-- [ ] T6.3.5 requirements.md 4章の受け入れ条件（AC1〜AC11、QC1〜QC7）をすべて確認し、結果を本書の末尾に記録する
-- [ ] T6.3.6 実装中に docs/ と食い違いが生じた箇所があれば、docs/ の更新を提案する
+- [x] T6.3.1 1024×768 と 1280×800 で全画面の表示・操作を確認する（QC5）
+- [x] T6.3.2 明るい表示・ダーク表示で全画面を確認する（QC6）
+- [x] T6.3.3 画面の表示名が glossary.md と一致しているか確認する（AC11）
+- [x] T6.3.4 タップ領域 44px 以上、`aria-label`、フォーカスリングを確認する
+- [x] T6.3.5 requirements.md 4章の受け入れ条件（AC1〜AC11、QC1〜QC7）をすべて確認し、結果を本書の末尾に記録する
+- [x] T6.3.6 実装中に docs/ と食い違いが生じた箇所があれば、docs/ の更新を提案する
 
 ### 6.4 利用者の作業
 
@@ -241,16 +241,43 @@
 - [ ] 👤 T6.4.4 main のブランチ保護（CI 成功を必須）を設定する
 
 **フェーズ6の完了条件**
-- [ ] requirements.md 4章の受け入れ条件をすべて満たす
+- [x] requirements.md 4章の受け入れ条件をすべて満たす
 - [ ] CI が成功している
+
+---
+
+**フェーズ6の実施メモ**
+- E2E は YouTube のモック（`e2e/mocks/videoPlayerMock.ts`）を fixture で全ページに注入し、Chromium・WebKit で8件すべて成功
+- CSP は Playwright で `vercel.json` の値をレスポンスヘッダーに付け、実際の YouTube 動画の埋め込み・再生ができ、CSP 違反がないことを確認した
+- 1024×768・1280×800 × 明暗の全5画面（20通り）で、横方向のはみ出しと 44px 未満のタップ領域がないことを自動で確認し、スクリーンショットを目視確認した。記録画面・分析画面は広い画面で画面の高さに収め、各列を個別にスクロールさせるよう修正した（`flex-1` が高さの指定より優先されていたため `lg:flex-none` を追加）
+- コート図のウイングの名前が図の端で切れていたため、コート図の中だけ「レフト／ウイング」の2行で表示するようにした（`components/court/courtLabels.ts`）
+- 用語集との一致は `domain/glossary.test.ts` で glossary.md の表を読み取って照合し、今後も CI で検査する
 
 ---
 
 ## 受け入れ確認の記録
 
-（T6.3.5 で記入する）
+2026-09-29 に確認（Playwright の Chromium・WebKit、および単体・コンポーネントテスト）。
 
-| 条件 | 結果 | 備考 |
+| 条件 | 結果 | 確認方法・備考 |
 |---|---|---|
-| AC1〜AC11 | | |
-| QC1〜QC7 | | |
+| AC1 一通りの操作 | ✅ | E2E `record-and-analyze`。実際の YouTube 動画でもブラウザで確認 |
+| AC2 5タップで記録・自動再開 | ✅ | E2E（位置 → コース → 結果 → 記録）、ShotForm のテスト |
+| AC3 結果による入力欄の切り替え | ✅ | E2E、ShotForm のテスト、validation のテスト |
+| AC4 取り消し | ✅ | E2E、ShotForm のテスト、ブラウザで削除の取り消しも確認 |
+| AC5 ヒートマップの値・参考値 | ✅ | E2E（コース1: 50%・1/2・参考）、GoalHeatmap のテスト |
+| AC6 絞り込みの更新と復元 | ✅ | E2E（再読み込み後も条件が残る）、FilterPanel・ストアのテスト |
+| AC7 シーン再生（前3秒〜後2秒） | ✅ | E2E（モックに渡した開始・終了の差が5秒） |
+| AC8 書き出し → 取り込みで復元 | ✅ | E2E `export-import`（別のブラウザコンテキストに取り込み）、dataTransferService のテスト |
+| AC9 不正ファイルのエラー | ✅ | E2E（スキーマ違反・JSON でないファイル）、importJson のテスト |
+| AC10 バックアップ警告 | ✅ | E2E（未バックアップ）、ブラウザで8日前の場合も確認、backup のテスト |
+| AC11 用語集との一致 | ✅ | `domain/glossary.test.ts`（glossary.md 3章の表と照合） |
+| QC1 lint・型チェック・テスト・ビルド | ✅ | すべて成功（テスト178件） |
+| QC2 domain のカバレッジ 90% 以上 | ✅ | 命令100%・分岐99%・関数100%・行100%（CI で閾値を検査） |
+| QC3 E2E（Chromium・WebKit） | ✅ | 8件すべて成功 |
+| QC4 GitHub Actions の CI | ⏳ | push 後に確認（T6.2.6） |
+| QC5 1024×768・1280×800 | ✅ | 全5画面で横はみ出し・小さいタップ領域なし、目視確認 |
+| QC6 明暗の表示 | ✅ | 全5画面を明暗で撮影し、文字とヒートマップの判別を目視確認 |
+| QC7 500本で1秒以内 | ✅ | 絞り込みの変更から更新まで 32〜71ms。1万件の集計は単体テストで 100ms 以内 |
+
+**利用者の確認が残っているもの**: 実際の試合動画での1試合分（50本）の記録（T3.4.1）、iPad の Safari での操作（T3.4.3）、main の作成・PR のマージ・Vercel 連携・ブランチ保護（T6.4.1〜T6.4.4）

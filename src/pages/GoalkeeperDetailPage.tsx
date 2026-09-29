@@ -15,8 +15,7 @@ import { matchActions, useMatchesByGoalkeeper } from '@/hooks/useMatches';
 import { useShotsByGoalkeeper } from '@/hooks/useShots';
 
 type PendingDelete =
-  | { kind: 'goalkeeper'; matchCount: number; shotCount: number }
-  | { kind: 'match'; match: Match; shotCount: number };
+  { kind: 'goalkeeper'; matchCount: number; shotCount: number } | { kind: 'match'; match: Match; shotCount: number };
 
 /** SC2 GK詳細 */
 export function GoalkeeperDetailPage() {

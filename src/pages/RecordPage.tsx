@@ -90,8 +90,10 @@ export function RecordPage() {
   }
 
   return (
-    <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 p-3 lg:grid-cols-[minmax(0,1fr)_24rem]">
-      <div className="flex min-w-0 flex-col gap-2">
+    // 広い画面では画面の高さに収め、シュート一覧と入力パネルをそれぞれスクロールさせる（ヘッダーと動画が隠れないように）
+    // （flex-1 のままだと高さの指定より伸縮が優先されるため、広い画面では flex-none にする）
+    <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 p-3 lg:h-[calc(100dvh-3.5rem)] lg:flex-none lg:grid-cols-[minmax(0,1fr)_24rem] lg:grid-rows-[minmax(0,1fr)] lg:overflow-hidden">
+      <div className="flex min-h-0 min-w-0 flex-col gap-2">
         <div className="flex flex-wrap items-center gap-2">
           <Link
             to={primaryGoalkeeper ? `/goalkeepers/${primaryGoalkeeper.id}` : '/'}
@@ -149,7 +151,7 @@ export function RecordPage() {
         </section>
       </div>
 
-      <aside className="min-w-0 lg:max-h-[calc(100dvh-5rem)] lg:overflow-y-auto" aria-label="入力パネル">
+      <aside className="min-h-0 min-w-0 lg:overflow-y-auto" aria-label="入力パネル">
         {goalkeepers.length === 0 ? (
           <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted">
             この試合に出場GKが登録されていません。試合を編集してGKを追加してください。

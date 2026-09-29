@@ -83,7 +83,14 @@ describe('ShotForm', () => {
     await waitFor(() => expect(onSaved).toHaveBeenCalledOnce());
     const [saved, isNew] = onSaved.mock.calls[0]!;
     expect(isNew).toBe(true);
-    expect(saved).toMatchObject({ matchId: MATCH_ID, goalkeeperId: goalkeeper.id, zone: 'seven_m', goalCell: 3, result: 'save', videoTime: 83.3 });
+    expect(saved).toMatchObject({
+      matchId: MATCH_ID,
+      goalkeeperId: goalkeeper.id,
+      zone: 'seven_m',
+      goalCell: 3,
+      result: 'save',
+      videoTime: 83.3,
+    });
     expect(await appDb.shots.get(saved.id)).toBeDefined();
 
     expect(screen.getByRole('radio', { name: 'セーブ' })).toHaveAttribute('aria-checked', 'false');
@@ -109,7 +116,14 @@ describe('ShotForm', () => {
   });
 
   it('編集モードでは既存の値を表示し、動画時刻を微調整して更新できる', async () => {
-    const shot = buildShot({ matchId: MATCH_ID, goalkeeperId: goalkeeper.id, videoTime: 100, zone: 'rw', result: 'goal', goalCell: 9 });
+    const shot = buildShot({
+      matchId: MATCH_ID,
+      goalkeeperId: goalkeeper.id,
+      videoTime: 100,
+      zone: 'rw',
+      result: 'goal',
+      goalCell: 9,
+    });
     await appDb.shots.put(shot);
     const { user, onSaved } = renderForm({ editingShot: shot });
 

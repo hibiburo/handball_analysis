@@ -52,10 +52,20 @@ export function ShotList({ shots, goalkeepers, editingShotId, onJump, onEdit, on
               <span className="flex-1 truncate text-xs text-muted">{goalkeeperNames.get(shot.goalkeeperId)}</span>
             )}
           </button>
-          <Button size="sm" variant="ghost" aria-label={`${formatVideoTime(shot.videoTime)} のシュートを編集`} onClick={() => onEdit(shot)}>
+          <Button
+            size="sm"
+            variant="ghost"
+            aria-label={`${formatVideoTime(shot.videoTime)} のシュートを編集`}
+            onClick={() => onEdit(shot)}
+          >
             ✎
           </Button>
-          <Button size="sm" variant="ghost" aria-label={`${formatVideoTime(shot.videoTime)} のシュートを削除`} onClick={() => onDelete(shot)}>
+          <Button
+            size="sm"
+            variant="ghost"
+            aria-label={`${formatVideoTime(shot.videoTime)} のシュートを削除`}
+            onClick={() => onDelete(shot)}
+          >
             🗑
           </Button>
         </li>

@@ -17,7 +17,10 @@ describe('parseYouTubeVideoId', () => {
   });
 
   it('時刻指定などの余分なパラメータは無視する', () => {
-    expect(parseYouTubeVideoId(`https://www.youtube.com/watch?v=${ID}&t=120s&list=abc`)).toEqual({ ok: true, value: ID });
+    expect(parseYouTubeVideoId(`https://www.youtube.com/watch?v=${ID}&t=120s&list=abc`)).toEqual({
+      ok: true,
+      value: ID,
+    });
     expect(parseYouTubeVideoId(`https://youtu.be/${ID}?si=xyz&t=30`)).toEqual({ ok: true, value: ID });
   });
 

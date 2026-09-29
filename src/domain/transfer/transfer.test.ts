@@ -19,7 +19,13 @@ function sampleData() {
   const match = buildMatch();
   const shots = [
     buildShot({ matchId: match.id, goalkeeperId: goalkeeper.id, result: 'goal', goalCell: 1 }),
-    buildShot({ matchId: match.id, goalkeeperId: goalkeeper.id, result: 'save', goalCell: 9, goalkeeperAction: 'hand' }),
+    buildShot({
+      matchId: match.id,
+      goalkeeperId: goalkeeper.id,
+      result: 'save',
+      goalCell: 9,
+      goalkeeperAction: 'hand',
+    }),
     buildShot({ matchId: match.id, goalkeeperId: goalkeeper.id, result: 'miss', goalCell: undefined }),
   ];
   return {
@@ -90,12 +96,14 @@ describe('parseImportFile', () => {
     expect(expectError('{not json')).toEqual({ code: 'invalid_json' });
   });
 
-  it.each([['配列', '[]'], ['別のアプリ', '{"app":"other"}'], ['null', 'null'], ['文字列', '"text"']])(
-    '%s は not_app_file',
-    (_, text) => {
-      expect(expectError(text)).toEqual({ code: 'not_app_file' });
-    },
-  );
+  it.each([
+    ['配列', '[]'],
+    ['別のアプリ', '{"app":"other"}'],
+    ['null', 'null'],
+    ['文字列', '"text"'],
+  ])('%s は not_app_file', (_, text) => {
+    expect(expectError(text)).toEqual({ code: 'not_app_file' });
+  });
 
   it('新しいバージョンのファイルは unsupported_version', () => {
     const file = { ...buildExportFile(sampleData(), 'all', NOW), schemaVersion: 2 };

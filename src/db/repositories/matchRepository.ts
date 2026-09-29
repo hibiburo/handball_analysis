@@ -65,7 +65,9 @@ export function matchRepository(db: AppDatabase) {
 
         await db.matches.put(match);
         await db.matchGoalkeepers.bulkDelete(removedIds.map((goalkeeperId) => [match.id, goalkeeperId]));
-        await db.matchGoalkeepers.bulkPut(uniqueGoalkeeperIds.map((goalkeeperId) => ({ matchId: match.id, goalkeeperId })));
+        await db.matchGoalkeepers.bulkPut(
+          uniqueGoalkeeperIds.map((goalkeeperId) => ({ matchId: match.id, goalkeeperId })),
+        );
         return ok(match);
       });
     },

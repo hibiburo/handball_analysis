@@ -63,8 +63,7 @@ export const useAnalysisFilterStore = create<AnalysisFilterState>()(
               : [...filter.excludedMatchIds, matchId],
           })),
         setMetric: (goalkeeperId, metric) => update(goalkeeperId, (filter) => ({ ...filter, metric })),
-        clearCriteria: (goalkeeperId) =>
-          update(goalkeeperId, (filter) => ({ ...filter, criteria: emptyShotCriteria })),
+        clearCriteria: (goalkeeperId) => update(goalkeeperId, (filter) => ({ ...filter, criteria: emptyShotCriteria })),
       };
     },
     {

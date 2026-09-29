@@ -1,5 +1,11 @@
 import { buildExportFile } from '@/domain/transfer/exportJson';
-import { buildImportPreview, checkReferences, type ExistingIds, type ImportError, type ImportPreview } from '@/domain/transfer/importJson';
+import {
+  buildImportPreview,
+  checkReferences,
+  type ExistingIds,
+  type ImportError,
+  type ImportPreview,
+} from '@/domain/transfer/importJson';
 import type { ExportFile, Goalkeeper, Match } from '@/domain/types';
 import { err, ok, type Result } from '@/lib/result';
 import { SETTINGS_KEY, type AppDatabase } from '../database';
@@ -34,18 +40,21 @@ export function dataTransferService(db: AppDatabase) {
   return {
     /** 全データを書き出し、最終バックアップ日時を記録する */
     async exportAll(now: Date): Promise<ExportFile> {
-      const file = await db.transaction('r', [db.goalkeepers, db.matches, db.matchGoalkeepers, db.shots, db.settings], async () =>
-        buildExportFile(
-          {
-            goalkeepers: await db.goalkeepers.toArray(),
-            matches: await db.matches.toArray(),
-            matchGoalkeepers: await db.matchGoalkeepers.toArray(),
-            shots: await db.shots.toArray(),
-            settings: await settings.get(),
-          },
-          'all',
-          now,
-        ),
+      const file = await db.transaction(
+        'r',
+        [db.goalkeepers, db.matches, db.matchGoalkeepers, db.shots, db.settings],
+        async () =>
+          buildExportFile(
+            {
+              goalkeepers: await db.goalkeepers.toArray(),
+              matches: await db.matches.toArray(),
+              matchGoalkeepers: await db.matchGoalkeepers.toArray(),
+              shots: await db.shots.toArray(),
+              settings: await settings.get(),
+            },
+            'all',
+            now,
+          ),
       );
       await settings.update({ lastBackupAt: now.toISOString() });
       return file;
@@ -104,39 +113,43 @@ export function dataTransferService(db: AppDatabase) {
      * 既存データと ID が重なるものは、policy に従って上書きまたはスキップする。
      */
     async importFile(file: ExportFile, policy: ConflictPolicy): Promise<Result<ImportSummary, ImportError>> {
-      return db.transaction('rw', [db.goalkeepers, db.matches, db.matchGoalkeepers, db.shots, db.settings], async () => {
-        const existing = await getExistingIds();
-        const references = checkReferences(file, existing);
-        if (!references.ok) return err(references.error);
+      return db.transaction(
+        'rw',
+        [db.goalkeepers, db.matches, db.matchGoalkeepers, db.shots, db.settings],
+        async () => {
+          const existing = await getExistingIds();
+          const references = checkReferences(file, existing);
+          if (!references.ok) return err(references.error);
 
-        const summary: ImportSummary = { added: 0, updated: 0, skipped: 0 };
-        async function upsert<T extends { id: string }>(
-          table: { bulkPut: (items: T[]) => Promise<unknown> },
-          items: T[],
-          existingIds: ReadonlySet<string>,
-        ) {
-          const fresh = items.filter((item) => !existingIds.has(item.id));
-          const conflicting = items.filter((item) => existingIds.has(item.id));
-          summary.added += fresh.length;
-          if (policy === 'overwrite') {
-            summary.updated += conflicting.length;
-            await table.bulkPut(items);
-          } else {
-            summary.skipped += conflicting.length;
-            await table.bulkPut(fresh);
+          const summary: ImportSummary = { added: 0, updated: 0, skipped: 0 };
+          async function upsert<T extends { id: string }>(
+            table: { bulkPut: (items: T[]) => Promise<unknown> },
+            items: T[],
+            existingIds: ReadonlySet<string>,
+          ) {
+            const fresh = items.filter((item) => !existingIds.has(item.id));
+            const conflicting = items.filter((item) => existingIds.has(item.id));
+            summary.added += fresh.length;
+            if (policy === 'overwrite') {
+              summary.updated += conflicting.length;
+              await table.bulkPut(items);
+            } else {
+              summary.skipped += conflicting.length;
+              await table.bulkPut(fresh);
+            }
           }
-        }
 
-        await upsert(db.goalkeepers, file.goalkeepers, existing.goalkeeperIds);
-        await upsert(db.matches, file.matches, existing.matchIds);
-        await upsert(db.shots, file.shots, existing.shotIds);
-        // 出場記録は ID を持たない紐づけのため、常に追加する（同じ組み合わせは1件にまとまる）
-        await db.matchGoalkeepers.bulkPut(file.matchGoalkeepers);
-        if (file.settings && policy === 'overwrite') {
-          await db.settings.put({ ...file.settings, key: SETTINGS_KEY });
-        }
-        return ok(summary);
-      });
+          await upsert(db.goalkeepers, file.goalkeepers, existing.goalkeeperIds);
+          await upsert(db.matches, file.matches, existing.matchIds);
+          await upsert(db.shots, file.shots, existing.shotIds);
+          // 出場記録は ID を持たない紐づけのため、常に追加する（同じ組み合わせは1件にまとまる）
+          await db.matchGoalkeepers.bulkPut(file.matchGoalkeepers);
+          if (file.settings && policy === 'overwrite') {
+            await db.settings.put({ ...file.settings, key: SETTINGS_KEY });
+          }
+          return ok(summary);
+        },
+      );
     },
   };
 }
