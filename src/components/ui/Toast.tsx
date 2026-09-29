@@ -19,6 +19,8 @@ type ToastContextValue = {
 const ToastContext = createContext<ToastContextValue | null>(null);
 
 const DEFAULT_TOAST_DURATION_MS = 4000;
+/** 同時に表示するトーストの最大数（古いものから隠す） */
+const MAX_VISIBLE_TOASTS = 3;
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -38,8 +40,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="pointer-events-none fixed bottom-4 left-1/2 z-50 flex w-full max-w-md -translate-x-1/2 flex-col gap-2 px-4">
-        {toasts.map((toast) => (
+      {/* 記録画面の入力パネル（右下）やシュート一覧（左下）を隠さないよう、ヘッダーの下に表示する */}
+      <div className="pointer-events-none fixed top-16 left-1/2 z-50 flex w-full max-w-md -translate-x-1/2 flex-col gap-2 px-4">
+        {toasts.slice(-MAX_VISIBLE_TOASTS).map((toast) => (
           <ToastMessage key={toast.id} toast={toast} onDismiss={dismiss} />
         ))}
       </div>

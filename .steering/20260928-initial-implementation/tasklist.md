@@ -19,7 +19,7 @@
 |---|---|
 | 1 開発基盤 | 完了（TypeScript は 6.0 を採用。T1.1.4 参照） |
 | 2 ドメイン・保存層 | 完了（テスト143件、domain カバレッジ 行100%・分岐99%） |
-| 3 GK・試合・記録 | 未着手 |
+| 3 GK・試合・記録 | 実装完了（👤 T3.4.1・T3.4.3 の実機確認が残り） |
 | 4 分析 | 未着手 |
 | 5 書き出し・取り込み、データ保護 | 未着手 |
 | 6 E2E・CI・仕上げ | 未着手 |
@@ -106,42 +106,55 @@
 
 ### 3.1 プレーヤー制御
 
-- [ ] T3.1.1 `player/types.ts`（VideoPlayer インターフェース）
-- [ ] T3.1.2 `player/loadYouTubeApi.ts`（読み込みを1回に限る）
-- [ ] T3.1.3 `player/youTubePlayer.ts`（エラーコードの対応づけ、nocookie ホスト、playerVars）
-- [ ] T3.1.4 E2E 用のプレーヤー差し替え（`window.__E2E_VIDEO_PLAYER__`）と `src/test/mockVideoPlayer.ts`
-- [ ] T3.1.5 `hooks/useVideoPlayer`（状態、現在時刻の 250ms ごとの更新、準備完了の判定）
-- [ ] T3.1.6 `components/video/YouTubePlayer`、`PlayerControls`（±2秒・±5秒、速度 0.25x〜2x）
+- [x] T3.1.1 `player/types.ts`（VideoPlayer インターフェース）
+- [x] T3.1.2 `player/loadYouTubeApi.ts`（読み込みを1回に限る）
+- [x] T3.1.3 `player/youTubePlayer.ts`（エラーコードの対応づけ、nocookie ホスト、playerVars）
+- [x] T3.1.4 E2E 用のプレーヤー差し替え（`window.__E2E_VIDEO_PLAYER__`）と `src/test/mockVideoPlayer.ts`
+- [x] T3.1.5 `hooks/useVideoPlayer`（状態、現在時刻の 250ms ごとの更新、準備完了の判定）
+- [x] T3.1.6 `components/video/YouTubePlayer`、`PlayerControls`（±2秒・±5秒、速度 0.25x〜2x）
 
 ### 3.2 GK・試合の管理
 
-- [ ] T3.2.1 M1 `GoalkeeperForm`（登録・編集、検証エラーの表示）
-- [ ] T3.2.2 SC1 `GoalkeeperListPage`（チーム別グループ、検索、試合数・シュート数、GK追加）
-- [ ] T3.2.3 M2 `MatchForm`（URL 解析、プレーヤーでの埋め込み可否の確認、GKの紐づけ）
-- [ ] T3.2.4 SC2 `GoalkeeperDetailPage`（GK情報、合計指標、試合一覧、試合の追加・編集・削除、GKの編集・削除）
-- [ ] T3.2.5 削除時の確認ダイアログ（連動して消える件数を表示）
+- [x] T3.2.1 M1 `GoalkeeperForm`（登録・編集、検証エラーの表示）
+- [x] T3.2.2 SC1 `GoalkeeperListPage`（チーム別グループ、検索、試合数・シュート数、GK追加）
+- [x] T3.2.3 M2 `MatchForm`（URL 解析、プレーヤーでの埋め込み可否の確認、GKの紐づけ）
+- [x] T3.2.4 SC2 `GoalkeeperDetailPage`（GK情報、合計指標、試合一覧、試合の追加・編集・削除、GKの編集・削除）
+- [x] T3.2.5 削除時の確認ダイアログ（連動して消える件数を表示）
 
 ### 3.3 記録画面
 
-- [ ] T3.3.1 `components/court/CourtZoneShape`、`CourtZonePicker`（コート図＋7mスロー・速攻・ロングシュートのボタン）
-- [ ] T3.3.2 `components/court/GoalGrid`、`GoalCellPicker`
-- [ ] T3.3.3 `components/shot/ShotForm`（必須項目、結果による切り替え、詳細欄の折りたたみ、担当GK・前後半の保持、「記録する（時刻）」ボタン）＋ コンポーネントテスト
-- [ ] T3.3.4 保存後の処理（フォームのリセット、取り消しトースト5秒、設定に応じた自動再開）
-- [ ] T3.3.5 `components/shot/ShotList`（時系列、タップで3秒前にシーク、編集・削除）
-- [ ] T3.3.6 編集モード（「更新する」、±0.5秒、「現在の再生位置で上書き」）
-- [ ] T3.3.7 SC3 `RecordPage`（レイアウト、`?shot=` での編集状態、プレーヤーのエラー表示と「URLを変更」）
+- [x] T3.3.1 `components/court/CourtZoneShape`、`CourtZonePicker`（コート図＋7mスロー・速攻・ロングシュートのボタン）
+- [x] T3.3.2 `components/court/GoalGrid`、`GoalCellPicker`
+- [x] T3.3.3 `components/shot/ShotForm`（必須項目、結果による切り替え、詳細欄の折りたたみ、担当GK・前後半の保持、「記録する（時刻）」ボタン）＋ コンポーネントテスト
+- [x] T3.3.4 保存後の処理（フォームのリセット、取り消しトースト5秒、設定に応じた自動再開）
+- [x] T3.3.5 `components/shot/ShotList`（時系列、タップで3秒前にシーク、編集・削除）
+- [x] T3.3.6 編集モード（「更新する」、±0.5秒、「現在の再生位置で上書き」）
+- [x] T3.3.7 SC3 `RecordPage`（レイアウト、`?shot=` での編集状態、プレーヤーのエラー表示と「URLを変更」）
 
 ### 3.4 実動画での確認
 
 - [ ] 👤 T3.4.1 埋め込みが許可された公開の試合動画のURLを用意する
-- [ ] T3.4.2 PC の Chrome で、試合登録 → シュート10本の記録 → 編集・削除・取り消しを確認する
+- [x] T3.4.2 PC の Chrome で、試合登録 → シュート10本の記録 → 編集・削除・取り消しを確認する
 - [ ] 👤 T3.4.3 iPad の Safari で、再生・一時停止・記録・シーンへのジャンプを確認する（開発サーバーを同じネットワークで公開して確認）
-- [ ] T3.4.4 埋め込み不可の動画・存在しない動画のURLで、試合登録時にエラーが表示されることを確認する
+- [x] T3.4.4 埋め込み不可の動画・存在しない動画のURLで、試合登録時にエラーが表示されることを確認する
 
 **フェーズ3の完了条件**
 - [ ] 実際の YouTube 動画で1試合分（目安50本）を記録できる
-- [ ] 5タップで1本を記録でき、記録後に再生が再開する（AC2）
-- [ ] 結果に応じて入力欄が切り替わる（AC3）、取り消しができる（AC4）
+- [x] 5タップで1本を記録でき、記録後に再生が再開する（AC2）
+- [x] 結果に応じて入力欄が切り替わる（AC3）、取り消しができる（AC4）
+
+**実施メモ**
+- T3.4.2・T3.4.4 は Playwright（Chromium）で、YouTube 公式サンプル動画（M7lc1UVf-VE）を使って確認した。試合登録（埋め込み確認）→ 記録 → 編集・削除・取り消しが動作。存在しない動画（aaaaaaaaaaa）は YouTube が埋め込み禁止と同じエラーコードを返すため、文言を「埋め込みが許可されていないか、存在しない」に変更した
+- 1試合分（50本）の記録は、実際の試合動画で利用者が確認する（T3.4.1）
+
+**design.md からの変更点（実装時の判断）**
+- E2E 用の差し替えは、プレーヤー1つではなく作成関数を差し替える `window.__E2E_VIDEO_PLAYER_FACTORY__` とした（動画の切り替えや複数プレーヤーに対応するため）
+- YouTube API は渡した要素を iframe に置き換えるため、React が管理しない要素を内部で作って渡す
+- `useVideoPlayer` はプレーヤーを入れる要素を state で持つ（読み込み中の表示のあとに要素が描画される場合に対応）
+- 再生前の動画ではシーク直後の時刻が古い値になるため、直前（1秒以内）のシーク先を基準に使う
+- コート図のゾーンは表示範囲で切り取った多角形として計算する（外接矩形がコート図の外に広がらないように）
+- トーストは入力パネル・シュート一覧を隠さないよう、ヘッダーの下に表示し、最大3件とした
+- 入力欄の汎用部品 `components/ui/Field.tsx`、Zod のエラーを文言にする `domain/formErrors.ts`、プレーヤーのエラー文言 `player/playerErrorMessage.ts` を追加した
 
 ---
 
