@@ -1,7 +1,9 @@
 name: CI
 
 on:
+  # 作業ブランチは Pull Request で検証し、push では main だけを検証する（同じ変更で CI が二重に動かないように）
   push:
+    branches: [main]
   pull_request:
 
 concurrency:

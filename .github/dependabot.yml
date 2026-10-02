@@ -9,6 +9,13 @@ updates:
       dev-dependencies:
         dependency-type: development
         update-types: [minor, patch]
+    ignore:
+      # typescript-eslint が TypeScript 7 に未対応のため、対応するまでメジャー更新を除外する（docs/architecture.md 1.1）
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
+      # 実行環境の Node.js（24 LTS）に型定義を合わせるため、メジャー更新を除外する
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
   - package-ecosystem: github-actions
     directory: /
     schedule:
