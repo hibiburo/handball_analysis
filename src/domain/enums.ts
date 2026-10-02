@@ -65,20 +65,25 @@ export const goalCellPositionLabels: Record<GoalCell, string> = {
   9: '右下',
 };
 
-/** シュート種別（glossary.md 3.3） */
-export const shotTypes = ['jump', 'step', 'running', 'diving', 'lob', 'bounce', 'spin', 'other'] as const;
+/** シュート種別（glossary.md 3.3）。どんな攻撃の形で打ったか */
+export const shotTypes = ['side', 'middle', 'pivot', 'cut_in', 'fast_break'] as const;
 export type ShotType = (typeof shotTypes)[number];
 
 export const shotTypeLabels: Record<ShotType, string> = {
-  jump: 'ジャンプ',
-  step: 'ステップ',
-  running: 'ランニング',
-  diving: '倒れ込み',
-  lob: 'ループ',
-  bounce: 'バウンド',
-  spin: 'スピン',
-  other: 'その他',
+  side: 'サイドシュート',
+  middle: 'ミドルシュート',
+  pivot: 'ポスト',
+  cut_in: 'カットイン',
+  fast_break: '速攻',
 };
+
+/**
+ * 現在のシュート種別の値か。
+ * 古い種別（ジャンプ・ステップなど、書き出しファイルの schemaVersion 1 まで）を移行で取り除くために使う。
+ */
+export function isShotType(value: unknown): value is ShotType {
+  return typeof value === 'string' && (shotTypes as readonly string[]).includes(value);
+}
 
 /** 結果（glossary.md 3.4） */
 export const shotResults = ['goal', 'save', 'post', 'miss', 'blocked'] as const;

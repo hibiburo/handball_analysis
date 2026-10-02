@@ -83,10 +83,10 @@ describe('集計の性能', () => {
         zone: shotZones[i % shotZones.length] ?? 'lb',
         result,
         ...(result === 'goal' || result === 'save' ? { goalCell } : { goalCell: undefined }),
-        shotType: i % 2 === 0 ? 'jump' : 'step',
+        shotType: i % 2 === 0 ? 'middle' : 'cut_in',
       });
     });
-    const criteria = { ...emptyFilterCriteria, zones: ['lb' as const, 'rb' as const], shotTypes: ['jump' as const] };
+    const criteria = { ...emptyFilterCriteria, zones: ['lb' as const, 'rb' as const], shotTypes: ['middle' as const] };
 
     const start = performance.now();
     buildGoalHeatmap(applyFilter(shots, criteria), 3);

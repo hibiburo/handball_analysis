@@ -1,5 +1,10 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { defaultGoalkeeperFilter, selectGoalkeeperFilter, useAnalysisFilterStore } from './analysisFilterStore';
+import {
+  defaultGoalkeeperFilter,
+  migrateAnalysisFilter,
+  selectGoalkeeperFilter,
+  useAnalysisFilterStore,
+} from './analysisFilterStore';
 import { useShotFormStore } from './shotFormStore';
 
 describe('analysisFilterStore', () => {
@@ -42,6 +47,28 @@ describe('analysisFilterStore', () => {
     state.clearCriteria('gk1');
 
     expect(get('gk1')).toEqual({ ...defaultGoalkeeperFilter, excludedMatchIds: ['m1'], metric: 'saveRate' });
+  });
+
+  it('version 1 の保存データから、古いシュート種別の条件だけを取り除く（AC6）', () => {
+    const saved = {
+      byGoalkeeper: {
+        gk1: {
+          ...defaultGoalkeeperFilter,
+          criteria: { ...defaultGoalkeeperFilter.criteria, shotTypes: ['jump', 'step'], zones: ['lb'] },
+          excludedMatchIds: ['m1'],
+        },
+      },
+    };
+    const migrated = migrateAnalysisFilter(saved, 1);
+    expect(migrated.byGoalkeeper['gk1']?.criteria.shotTypes).toEqual([]);
+    expect(migrated.byGoalkeeper['gk1']?.criteria.zones).toEqual(['lb']);
+    expect(migrated.byGoalkeeper['gk1']?.excludedMatchIds).toEqual(['m1']);
+  });
+
+  it('version 2 以降の保存データと、保存データがない場合はそのまま', () => {
+    const saved = { byGoalkeeper: { gk1: defaultGoalkeeperFilter } };
+    expect(migrateAnalysisFilter(saved, 2)).toEqual(saved);
+    expect(migrateAnalysisFilter(undefined, 1)).toEqual({ byGoalkeeper: {} });
   });
 
   it('localStorage に保存する', () => {

@@ -1,4 +1,5 @@
 import { Dexie, type EntityTable, type Table } from 'dexie';
+import { isShotType } from '@/domain/enums';
 import type { Goalkeeper, Match, MatchGoalkeeper, Settings, Shot } from '@/domain/types';
 
 export const SETTINGS_KEY = 'app';
@@ -17,13 +18,26 @@ export class AppDatabase extends Dexie {
 
   constructor(name = 'handball_analysis') {
     super(name);
-    this.version(1).stores({
+    const stores = {
       goalkeepers: 'id, teamName',
       matches: 'id, date',
       matchGoalkeepers: '[matchId+goalkeeperId], goalkeeperId, matchId',
       shots: 'id, matchId, goalkeeperId, [matchId+videoTime]',
       settings: 'key',
-    });
+    };
+    this.version(1).stores(stores);
+    // version 2: シュート種別を打ち方から攻撃の形に変更した。古い種別は対応しないため、種別だけを未入力にする
+    // （ストア・インデックスは変更なし。.steering/20261002-change-shot-types）
+    this.version(2)
+      .stores(stores)
+      .upgrade((tx) =>
+        tx
+          .table('shots')
+          .toCollection()
+          .modify((shot: { shotType?: unknown }) => {
+            if (shot.shotType !== undefined && !isShotType(shot.shotType)) delete shot.shotType;
+          }),
+      );
   }
 }
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { shotResultLabels, shotResults, toOptions, zoneLabels } from './enums';
+import { isShotType, shotResultLabels, shotResults, toOptions, zoneLabels } from './enums';
 
 describe('enums', () => {
   it('値と表示名から選択肢を作る', () => {
@@ -10,6 +10,15 @@ describe('enums', () => {
       { value: 'miss', label: '枠外' },
       { value: 'blocked', label: 'DFブロック' },
     ]);
+  });
+
+  it('現在のシュート種別だけを有効な値と判定する', () => {
+    expect(isShotType('side')).toBe(true);
+    expect(isShotType('fast_break')).toBe(true);
+    expect(isShotType('jump')).toBe(false);
+    expect(isShotType('other')).toBe(false);
+    expect(isShotType(undefined)).toBe(false);
+    expect(isShotType(1)).toBe(false);
   });
 
   it('シュート位置の表示名が用語集と一致する（glossary.md 3.1）', () => {
