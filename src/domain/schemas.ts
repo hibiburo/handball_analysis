@@ -100,8 +100,8 @@ export const settingsSchema = z.object({
 
 /** 設定の既定値（functional-design.md 6.3） */
 export const defaultSettings: z.infer<typeof settingsSchema> = {
-  highlightPreSeconds: 3,
-  highlightPostSeconds: 2,
+  highlightPreSeconds: 4,
+  highlightPostSeconds: 3,
   autoResumeAfterRecord: true,
   lowSampleThreshold: 3,
   lastBackupAt: null,
