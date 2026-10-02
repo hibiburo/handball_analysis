@@ -225,8 +225,8 @@ describe('shotRepository', () => {
 describe('settingsRepository', () => {
   it('保存されていなければ既定値を返す', async () => {
     expect(await settings.get()).toEqual({
-      highlightPreSeconds: 3,
-      highlightPostSeconds: 2,
+      highlightPreSeconds: 4,
+      highlightPostSeconds: 3,
       autoResumeAfterRecord: true,
       lowSampleThreshold: 3,
       lastBackupAt: null,
@@ -239,7 +239,7 @@ describe('settingsRepository', () => {
     expect(await settings.get()).toMatchObject({
       highlightPreSeconds: 5,
       autoResumeAfterRecord: false,
-      highlightPostSeconds: 2,
+      highlightPostSeconds: 3,
     });
   });
 

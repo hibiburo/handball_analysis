@@ -44,7 +44,7 @@ test('GK登録 → 試合登録 → シュート記録（取り消しを含む�
   await page.reload();
   await expect(page.getByRole('heading', { name: 'シーン（1件）' })).toBeVisible();
 
-  // シーン再生（AC7）: 記録時刻の3秒前から2秒後まで
+  // シーン再生（AC7）: 記録時刻の4秒前から3秒後まで
   await page.getByRole('region', { name: '絞り込み' }).getByRole('button', { name: 'クリア' }).click();
   await page.locator('aside[aria-label="シーン"] ol button').first().click();
   const dialog = page.getByRole('dialog');
@@ -57,8 +57,12 @@ test('GK登録 → 試合登録 → シュート記録（取り消しを含む�
       .filter((entry) => entry.action === 'create')
       .at(-1),
   );
-  // 既定の前余白3秒・後余白2秒で、合わせて5秒のシーンを再生する
-  expect((created?.value?.end ?? 0) - (created?.value?.start ?? 0)).toBeCloseTo(5, 0);
+  // 既定の前余白4秒・後余白3秒で、合わせて7秒のシーンを再生する。
+  // 終了 = 記録時刻 + 3秒 なので、長さが7秒で開始が0秒に切り詰められていなければ、開始 = 記録時刻 − 4秒 になっている
+  const start = created?.value?.start ?? 0;
+  const end = created?.value?.end ?? 0;
+  expect(start).toBeGreaterThan(0);
+  expect(end - start).toBeCloseTo(7, 0);
   await dialog.locator('footer').getByRole('button', { name: '閉じる' }).click();
   await expect(dialog).toBeHidden();
 });
