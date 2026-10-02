@@ -321,7 +321,7 @@ stateDiagram-v2
 ```json
 {
   "app": "handball_analysis",
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "exportedAt": "2026-09-28T14:00:00.000Z",
   "scope": "all",
   "goalkeepers": [],
@@ -446,7 +446,7 @@ erDiagram
 | handedness / shooterHand | `right` 右、`left` 左、`unknown` 不明 |
 | zone | `lw` レフトウイング、`lb` レフトバック、`cb` センター、`rb` ライトバック、`rw` ライトウイング、`pivot_l` 6m左、`pivot_c` 6m中央、`pivot_r` 6m右、`seven_m` 7mスロー、`fast_break` 速攻、`long` ロングシュート |
 | goalCell | `1`〜`9`（上段左から右へ1・2・3、中段4・5・6、下段7・8・9。シューターから見た向き） |
-| shotType | `jump` ジャンプ、`step` ステップ、`running` ランニング、`diving` 倒れ込み、`lob` ループ、`bounce` バウンド、`spin` スピン、`other` その他 |
+| shotType | `side` サイドシュート、`middle` ミドルシュート、`pivot` ポスト、`cut_in` カットイン、`fast_break` 速攻 |
 | result | `goal` 失点、`save` セーブ、`post` ポスト・バー、`miss` 枠外、`blocked` DFブロック |
 | goalkeeperAction | `hand` 手、`foot` 足、`body` 体、`none` 反応なし |
 | shooterPosition | `LW`、`LB`、`CB`、`RB`、`RW`、`PV` |
@@ -473,6 +473,13 @@ erDiagram
 | matchGoalkeepers | [matchId, goalkeeperId] | goalkeeperId, matchId |
 | shots | id | matchId, goalkeeperId, [matchId, videoTime] |
 | settings | key（固定値 `"app"`） | − |
+
+**バージョン履歴**（Dexie の `version(n)`）
+
+| バージョン | 内容 |
+|---|---|
+| 1 | 初回実装 |
+| 2 | シュート種別の変更に伴い、古い種別（`jump` など）の `shotType` を削除する移行を追加（ストア・インデックスは変更なし） |
 
 ### 6.5 削除時の扱い
 

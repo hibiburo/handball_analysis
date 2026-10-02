@@ -7,27 +7,27 @@ function criteria(overrides: Partial<FilterCriteria>): FilterCriteria {
 }
 
 describe('applyFilter', () => {
-  const lbJump = buildShot({ zone: 'lb', shotType: 'jump', shooterHand: 'right', half: 1 });
-  const lbStep = buildShot({ zone: 'lb', shotType: 'step', shooterHand: 'left', half: 2 });
-  const rwJump = buildShot({ zone: 'rw', shotType: 'jump', shooterHand: 'left', half: 2 });
+  const lbMiddle = buildShot({ zone: 'lb', shotType: 'middle', shooterHand: 'right', half: 1 });
+  const lbCutIn = buildShot({ zone: 'lb', shotType: 'cut_in', shooterHand: 'left', half: 2 });
+  const rwMiddle = buildShot({ zone: 'rw', shotType: 'middle', shooterHand: 'left', half: 2 });
   const cbNoType = buildShot({ zone: 'cb', result: 'miss' });
-  const shots = [lbJump, lbStep, rwJump, cbNoType];
+  const shots = [lbMiddle, lbCutIn, rwMiddle, cbNoType];
 
   it('条件が空の場合は全件を返す', () => {
     expect(applyFilter(shots, emptyFilterCriteria)).toEqual(shots);
   });
 
   it('同じ項目の中の複数の値は OR で組み合わせる', () => {
-    expect(applyFilter(shots, criteria({ zones: ['lb', 'rw'] }))).toEqual([lbJump, lbStep, rwJump]);
+    expect(applyFilter(shots, criteria({ zones: ['lb', 'rw'] }))).toEqual([lbMiddle, lbCutIn, rwMiddle]);
   });
 
   it('異なる項目どうしは AND で組み合わせる', () => {
-    expect(applyFilter(shots, criteria({ zones: ['lb', 'rw'], shooterHands: ['left'] }))).toEqual([lbStep, rwJump]);
-    expect(applyFilter(shots, criteria({ zones: ['lb'], shotTypes: ['jump'], halves: [1] }))).toEqual([lbJump]);
+    expect(applyFilter(shots, criteria({ zones: ['lb', 'rw'], shooterHands: ['left'] }))).toEqual([lbCutIn, rwMiddle]);
+    expect(applyFilter(shots, criteria({ zones: ['lb'], shotTypes: ['middle'], halves: [1] }))).toEqual([lbMiddle]);
   });
 
   it('任意項目が未入力のシュートは、その項目に条件がある場合は除外する', () => {
-    expect(applyFilter(shots, criteria({ shotTypes: ['jump', 'step', 'other'] }))).not.toContain(cbNoType);
+    expect(applyFilter(shots, criteria({ shotTypes: ['middle', 'cut_in', 'pivot'] }))).not.toContain(cbNoType);
   });
 
   it('試合で絞り込む', () => {

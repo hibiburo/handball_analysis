@@ -108,7 +108,7 @@ export const defaultSettings: z.infer<typeof settingsSchema> = {
 };
 
 /** 書き出しファイルの形式のバージョン。構造を変えたら上げて、migrations.ts に移行処理を書く */
-export const CURRENT_SCHEMA_VERSION = 1;
+export const CURRENT_SCHEMA_VERSION = 2;
 export const EXPORT_APP_NAME = 'handball_analysis';
 
 export const exportScopes = ['all', 'goalkeeper', 'match'] as const;

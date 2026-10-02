@@ -51,7 +51,8 @@ export function OptionButtonGroup<T extends string | number>({
               role="radio"
               aria-checked={isSelected}
               className={clsx(
-                'min-h-11 rounded-lg border px-2 text-sm font-medium transition-colors',
+                // 左右の余白は小さめにして、「サイドシュート」など長めの名前も3列で1行に収める
+                'min-h-11 rounded-lg border px-1 text-sm font-medium transition-colors',
                 isSelected
                   ? 'border-primary bg-primary text-primary-foreground'
                   : 'border-border bg-surface text-foreground hover:bg-surface-hover',

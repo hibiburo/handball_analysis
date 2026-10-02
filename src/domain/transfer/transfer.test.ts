@@ -48,7 +48,7 @@ describe('buildExportFile', () => {
     const file = buildExportFile(sampleData(), 'goalkeeper', NOW);
     expect(file).toMatchObject({
       app: 'handball_analysis',
-      schemaVersion: 1,
+      schemaVersion: 2,
       exportedAt: '2026-09-28T05:00:00.000Z',
       scope: 'goalkeeper',
     });
@@ -106,8 +106,8 @@ describe('parseImportFile', () => {
   });
 
   it('新しいバージョンのファイルは unsupported_version', () => {
-    const file = { ...buildExportFile(sampleData(), 'all', NOW), schemaVersion: 2 };
-    expect(expectError(JSON.stringify(file))).toEqual({ code: 'unsupported_version', version: 2 });
+    const file = { ...buildExportFile(sampleData(), 'all', NOW), schemaVersion: 3 };
+    expect(expectError(JSON.stringify(file))).toEqual({ code: 'unsupported_version', version: 3 });
   });
 
   it('スキーマに合わないデータは invalid_schema で、場所が分かる', () => {
@@ -140,9 +140,55 @@ describe('parseImportFile', () => {
 });
 
 describe('migrateExportFile', () => {
-  it('バージョン1はそのまま返す', () => {
-    const raw = { schemaVersion: 1, app: 'handball_analysis' };
+  it('現在のバージョン（2）はそのまま返す', () => {
+    const raw = { schemaVersion: 2, app: 'handball_analysis' };
     expect(migrateExportFile(raw)).toEqual({ ok: true, value: raw });
+  });
+
+  it('バージョン1は、古いシュート種別だけを消してバージョン2にする', () => {
+    const raw = {
+      schemaVersion: 1,
+      app: 'handball_analysis',
+      shots: [
+        { id: 'a', zone: 'lb', shotType: 'jump' },
+        { id: 'b', zone: 'rw', shotType: 'other' },
+        { id: 'c', zone: 'cb' },
+      ],
+    };
+    expect(migrateExportFile(raw)).toEqual({
+      ok: true,
+      value: {
+        schemaVersion: 2,
+        app: 'handball_analysis',
+        shots: [
+          { id: 'a', zone: 'lb' },
+          { id: 'b', zone: 'rw' },
+          { id: 'c', zone: 'cb' },
+        ],
+      },
+    });
+  });
+
+  it('バージョン1の書き出しファイルを取り込むと、古い種別は未入力になり、他の項目は残る（AC5）', () => {
+    const file = buildExportFile(sampleData(), 'all', NOW);
+    const v1 = {
+      ...file,
+      schemaVersion: 1,
+      shots: file.shots.map((shot) => ({ ...shot, shotType: 'jump' })),
+    };
+    const result = parseImportFile(JSON.stringify(v1));
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.value.schemaVersion).toBe(2);
+    expect(result.value.shots.map((shot) => shot.shotType)).toEqual([undefined, undefined, undefined]);
+    expect(result.value.shots.map((shot) => shot.result)).toEqual(file.shots.map((shot) => shot.result));
+  });
+
+  it('バージョン1でも、shots が配列でない場合はそのまま渡し、スキーマの検証でエラーにする', () => {
+    expect(migrateExportFile({ schemaVersion: 1, shots: 'broken' })).toEqual({
+      ok: true,
+      value: { schemaVersion: 2, shots: 'broken' },
+    });
   });
 
   it.each([0, 1.5, '1', undefined])('不正なバージョン %s は拒否する', (version) => {
@@ -200,7 +246,7 @@ describe('importErrorMessage', () => {
     { code: 'too_large' },
     { code: 'invalid_json' },
     { code: 'not_app_file' },
-    { code: 'unsupported_version', version: 2 },
+    { code: 'unsupported_version', version: 3 },
     { code: 'unsupported_version', version: 0 },
     { code: 'invalid_schema', issues: [] },
     { code: 'broken_reference', details: [] },
@@ -209,7 +255,7 @@ describe('importErrorMessage', () => {
   });
 
   it('新しいバージョンと古いバージョンで文言を分ける', () => {
-    expect(importErrorMessage({ code: 'unsupported_version', version: 2 })).toContain('新しいバージョン');
+    expect(importErrorMessage({ code: 'unsupported_version', version: 3 })).toContain('新しいバージョン');
     expect(importErrorMessage({ code: 'unsupported_version', version: 0 })).not.toContain('新しいバージョン');
   });
 });

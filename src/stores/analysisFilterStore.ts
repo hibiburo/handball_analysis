@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { isShotType } from '@/domain/enums';
 import { emptyFilterCriteria, type FilterCriteria } from '@/domain/stats/filter';
 import type { HeatmapMetric } from '@/domain/stats/heatmap';
 
@@ -32,6 +33,30 @@ type AnalysisFilterState = {
   /** 試合の除外と表示の指標は残し、試合以外の条件を消す */
   clearCriteria: (goalkeeperId: string) => void;
 };
+
+/**
+ * 保存済みの状態を現在の形に変換する。
+ * version 1 → 2: シュート種別を変更したため、古い種別（ジャンプなど）の条件だけを取り除く（.steering/20261002-change-shot-types）
+ */
+export function migrateAnalysisFilter(
+  persisted: unknown,
+  version: number,
+): { byGoalkeeper: Record<string, GoalkeeperFilter> } {
+  const state = (persisted ?? {}) as { byGoalkeeper?: Record<string, GoalkeeperFilter> }; // 保存した形（partialize）のまま読み出される
+  const byGoalkeeper = state.byGoalkeeper ?? {};
+  if (version >= 2) return { byGoalkeeper };
+  return {
+    byGoalkeeper: Object.fromEntries(
+      Object.entries(byGoalkeeper).map(([goalkeeperId, filter]) => [
+        goalkeeperId,
+        {
+          ...filter,
+          criteria: { ...filter.criteria, shotTypes: (filter.criteria.shotTypes ?? []).filter(isShotType) },
+        },
+      ]),
+    ),
+  };
+}
 
 function current(state: AnalysisFilterState, goalkeeperId: string): GoalkeeperFilter {
   return state.byGoalkeeper[goalkeeperId] ?? defaultGoalkeeperFilter;
@@ -68,9 +93,10 @@ export const useAnalysisFilterStore = create<AnalysisFilterState>()(
     },
     {
       name: 'handball_analysis.analysisFilter',
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ byGoalkeeper: state.byGoalkeeper }),
+      migrate: migrateAnalysisFilter,
     },
   ),
 );

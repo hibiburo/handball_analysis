@@ -291,7 +291,7 @@ function ShotDetailFields({ draft, set }: ShotDetailFieldsProps) {
       <div className={clsx('flex flex-col gap-3 px-3 pb-3', !isOpen && 'hidden')}>
         <OptionButtonGroup
           label="シュート種別"
-          columns={4}
+          columns={3}
           allowDeselect
           options={toOptions(shotTypes, shotTypeLabels)}
           value={draft.shotType}
