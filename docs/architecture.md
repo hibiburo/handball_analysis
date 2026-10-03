@@ -26,6 +26,7 @@
 | スキーマ検証 | Zod | 4.x | 取り込みファイルの検証、フォーム入力の検証、型の自動生成を1か所で定義する |
 | PWA | vite-plugin-pwa | 1.x | ホーム画面への追加とアプリ本体のオフライン表示（2.3参照） |
 | 動画 | YouTube IFrame Player API | − | 公式の埋め込みプレーヤー。型定義は `@types/youtube` |
+| Excel 書き出し | write-excel-file | 4.x | シーン一覧の .xlsx の作成。使うときだけ読み込む（npm 版の `xlsx`（SheetJS）は古く既知の脆弱性があるため使わない） |
 
 グラフ描画ライブラリは使わない。ヒートマップ・コート図は項目数が少ないため、SVGとTailwindで自作する。
 
