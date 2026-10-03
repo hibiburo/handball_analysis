@@ -9,6 +9,20 @@ const SHORT_HOST = 'youtu.be';
 const PATH_PREFIXES = ['shorts', 'embed', 'live'];
 
 /**
+ * 指定した位置から再生する YouTube の視聴リンクを作る（.steering/20261003-scene-link-csv）。
+ * 動画ファイルは作らず、再生位置を指定するだけにする（YouTube の利用規約のため）。
+ *
+ * 範囲（start・end）を指定できる埋め込み用の URL（/embed/）は、参照元（Referer）なしで直接開くと
+ * YouTube が「エラー 153」を返して再生できないため、共有用には使わない。
+ * 通常の視聴リンクは、スマホでは YouTube アプリで開き、指定した位置から再生される（終了位置では止まらない）。
+ * 開始位置は整数秒にし、シーンが欠けないよう切り捨てる。
+ */
+export function buildYouTubeWatchUrl({ videoId, start }: { videoId: string; start: number }): string {
+  const startSeconds = Math.max(0, Math.floor(start));
+  return `https://youtu.be/${encodeURIComponent(videoId)}?t=${startSeconds}`;
+}
+
+/**
  * YouTube の URL から動画IDを取り出す（functional-design.md 5.6）。
  * 取り出したIDは形式を検証し、埋め込みには検証済みのIDのみを使う（architecture.md 4章）。
  */

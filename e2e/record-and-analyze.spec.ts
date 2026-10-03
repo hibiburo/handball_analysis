@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { createGoalkeeper, createMatch, expect, recordShot, test } from './fixtures.ts';
 
 test('GK登録 → 試合登録 → シュート記録（取り消しを含む）→ 分析 → シーン再生', async ({ page }) => {
@@ -43,6 +44,29 @@ test('GK登録 → 試合登録 → シュート記録（取り消しを含む�
   await expect(page.getByRole('heading', { name: 'シーン（1件）' })).toBeVisible();
   await page.reload();
   await expect(page.getByRole('heading', { name: 'シーン（1件）' })).toBeVisible();
+
+  // 共有用の書き出し: 絞り込んだシーン（1件）を、動画リンク付きの CSV で書き出す（.steering/20261003-scene-link-csv）
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('button', { name: '共有用に書き出す（CSV）' }).click(),
+  ]);
+  expect(download.suggestedFilename()).toMatch(/^handball_analysis_scenes_山田太郎_\d{8}\.csv$/);
+  const csv = readFileSync(await download.path(), 'utf8');
+  const lines = csv
+    .replace(/^\uFEFF/, '')
+    .trimEnd()
+    .split('\r\n');
+  expect(lines).toHaveLength(2);
+  expect(lines[0]).toBe(
+    '試合日,対戦,大会,動画時刻,シュート位置,シュート種別,コース,結果,GKの対応,利き手,ポジション,数的状況,前後半,メモ,動画リンク',
+  );
+  const cells = lines[1]?.split(',') ?? [];
+  expect(cells[1]).toBe('○○大学 vs □□大学');
+  // 動画リンクは、動画時刻の前余白（既定4秒）前から再生する
+  const [minutes, seconds] = (cells[3] ?? '').split(':').map(Number);
+  const link = cells.at(-1)?.match(/^https:\/\/youtu\.be\/dQw4w9WgXcQ\?t=(\d+)$/);
+  expect(link).not.toBeNull();
+  expect(Number(link?.[1])).toBe(Math.max(0, (minutes ?? 0) * 60 + (seconds ?? 0) - 4));
 
   // シーン再生（AC7）: 記録時刻の4秒前から3秒後まで
   await page.getByRole('region', { name: '絞り込み' }).getByRole('button', { name: 'クリア' }).click();

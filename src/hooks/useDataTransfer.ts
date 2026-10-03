@@ -1,8 +1,9 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { appDb } from '@/db/database';
 import { dataTransferService } from '@/db/repositories/dataTransferService';
+import { buildSceneCsv, buildSceneCsvFileName } from '@/domain/transfer/exportCsv';
 import { buildExportFileName, serializeExportFile } from '@/domain/transfer/exportJson';
-import type { ExportFile, Goalkeeper, Match } from '@/domain/types';
+import type { ExportFile, Goalkeeper, Match, Shot } from '@/domain/types';
 import { downloadTextFile, sanitizeFilename } from '@/lib/download';
 import { todayLocalDate } from '@/lib/time';
 
@@ -31,6 +32,21 @@ export async function downloadGoalkeeperData(goalkeeper: Goalkeeper): Promise<vo
 export async function downloadMatchData(match: Match): Promise<void> {
   const file = await dataTransferActions.exportMatch(match.id, new Date());
   if (file) download(file, `${match.homeTeam}vs${match.awayTeam}`);
+}
+
+/**
+ * 選手に共有するためのシーン一覧（動画リンク付き）を CSV でダウンロードする（.steering/20261003-scene-link-csv）。
+ * shots はシーン一覧と同じ順番で渡す。
+ */
+export function downloadSceneCsv(params: {
+  goalkeeper: Goalkeeper;
+  shots: readonly Shot[];
+  matchesById: ReadonlyMap<string, Match>;
+  preSeconds: number;
+}): void {
+  const { goalkeeper, ...rest } = params;
+  const name = buildSceneCsvFileName(sanitizeFilename(goalkeeper.name), todayLocalDate());
+  downloadTextFile(name, buildSceneCsv(rest), 'text/csv');
 }
 
 /** 記録データ（シュート）が1件以上あるか。バックアップ警告の判定に使う */

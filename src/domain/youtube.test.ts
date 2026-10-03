@@ -1,7 +1,25 @@
 import { describe, expect, it } from 'vitest';
-import { parseYouTubeVideoId } from './youtube';
+import { buildYouTubeWatchUrl, parseYouTubeVideoId } from './youtube';
 
 const ID = 'dQw4w9WgXcQ';
+
+describe('buildYouTubeWatchUrl', () => {
+  it('開始位置を指定した視聴リンクを作る', () => {
+    expect(buildYouTubeWatchUrl({ videoId: ID, start: 1417 })).toBe(`https://youtu.be/${ID}?t=1417`);
+  });
+
+  it('開始位置は切り捨てて、シーンを欠けさせない', () => {
+    expect(buildYouTubeWatchUrl({ videoId: ID, start: 1417.9 })).toBe(`https://youtu.be/${ID}?t=1417`);
+  });
+
+  it('開始位置は0秒より前にしない', () => {
+    expect(buildYouTubeWatchUrl({ videoId: ID, start: -2 })).toBe(`https://youtu.be/${ID}?t=0`);
+  });
+
+  it('作ったリンクは動画IDの解析で元の動画IDに戻る', () => {
+    expect(parseYouTubeVideoId(buildYouTubeWatchUrl({ videoId: ID, start: 30 }))).toEqual({ ok: true, value: ID });
+  });
+});
 
 describe('parseYouTubeVideoId', () => {
   it.each([

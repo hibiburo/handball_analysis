@@ -3,11 +3,14 @@ import { Link, useParams } from 'react-router';
 import { FilterPanel } from '@/components/analysis/FilterPanel';
 import { SceneList } from '@/components/analysis/SceneList';
 import { GoalHeatmap } from '@/components/court/GoalHeatmap';
+import { Button } from '@/components/ui/Button';
+import { useToast } from '@/components/ui/Toast';
 import { HighlightPlayerModal } from '@/components/video/HighlightPlayerModal';
 import { applyFilter } from '@/domain/stats/filter';
 import { buildGoalHeatmap } from '@/domain/stats/heatmap';
 import { calcMetrics, formatRate } from '@/domain/stats/metrics';
 import type { Match, Shot } from '@/domain/types';
+import { downloadSceneCsv } from '@/hooks/useDataTransfer';
 import { useGoalkeeper } from '@/hooks/useGoalkeepers';
 import { useMatchesByGoalkeeper } from '@/hooks/useMatches';
 import { useSettings } from '@/hooks/useSettings';
@@ -21,6 +24,7 @@ export function AnalysisPage() {
   const matches = useMatchesByGoalkeeper(goalkeeperId);
   const shots = useShotsByGoalkeeper(goalkeeperId);
   const settings = useSettings();
+  const { showToast } = useToast();
   const filter = useAnalysisFilterStore(selectGoalkeeperFilter(goalkeeperId));
   const toggleCriteriaValue = useAnalysisFilterStore((s) => s.toggleCriteriaValue);
   const setMetric = useAnalysisFilterStore((s) => s.setMetric);
@@ -109,7 +113,31 @@ export function AnalysisPage() {
             />
           </section>
           <aside className="flex min-h-0 flex-col border-border lg:border-l" aria-label="シーン">
-            <h2 className="border-b border-border px-3 py-2 text-sm font-bold">シーン（{sceneShots.length}件）</h2>
+            <div className="flex items-center justify-between gap-2 border-b border-border py-1 pr-1 pl-3">
+              <h2 className="text-sm font-bold">シーン（{sceneShots.length}件）</h2>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-primary"
+                disabled={sceneShots.length === 0}
+                title="絞り込んだシーンを、動画リンク付きの一覧（CSV）で書き出します。Google Drive に入れて選手に共有できます"
+                onClick={() => {
+                  try {
+                    downloadSceneCsv({
+                      goalkeeper,
+                      shots: sceneShots,
+                      matchesById,
+                      preSeconds: settings.highlightPreSeconds,
+                    });
+                    showToast(`${sceneShots.length}件のシーンを書き出しました`, { tone: 'success' });
+                  } catch {
+                    showToast('書き出せませんでした。もう一度お試しください。', { tone: 'error' });
+                  }
+                }}
+              >
+                共有用に書き出す（CSV）
+              </Button>
+            </div>
             <div className="min-h-0 flex-1 overflow-y-auto">
               <SceneList shots={sceneShots} matchesById={matchesById} onPlay={setPlayingShot} />
             </div>
