@@ -15,6 +15,7 @@ describe('enums', () => {
   it('現在のシュート種別だけを有効な値と判定する', () => {
     expect(isShotType('side')).toBe(true);
     expect(isShotType('fast_break')).toBe(true);
+    expect(isShotType('seven_m')).toBe(true);
     expect(isShotType('jump')).toBe(false);
     expect(isShotType('other')).toBe(false);
     expect(isShotType(undefined)).toBe(false);

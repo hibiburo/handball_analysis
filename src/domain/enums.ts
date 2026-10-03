@@ -66,7 +66,7 @@ export const goalCellPositionLabels: Record<GoalCell, string> = {
 };
 
 /** シュート種別（glossary.md 3.3）。どんな攻撃の形で打ったか */
-export const shotTypes = ['side', 'middle', 'pivot', 'cut_in', 'fast_break'] as const;
+export const shotTypes = ['side', 'middle', 'pivot', 'cut_in', 'fast_break', 'seven_m'] as const;
 export type ShotType = (typeof shotTypes)[number];
 
 export const shotTypeLabels: Record<ShotType, string> = {
@@ -75,6 +75,7 @@ export const shotTypeLabels: Record<ShotType, string> = {
   pivot: 'ポスト',
   cut_in: 'カットイン',
   fast_break: '速攻',
+  seven_m: '7mスロー',
 };
 
 /**
