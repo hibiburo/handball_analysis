@@ -1,4 +1,24 @@
+import { readFileSync } from 'node:fs';
+import { unzipSync } from 'fflate';
 import { createGoalkeeper, createMatch, expect, recordShot, test } from './fixtures.ts';
+
+/** .xlsx（zip）を展開し、シートの文字列を出現順に取り出す（共有文字列・セル内の文字列の両方に対応） */
+function xlsxTexts(data: Uint8Array): string[] {
+  const files = unzipSync(data);
+  const decode = (name: string) => new TextDecoder().decode(files[name] ?? new Uint8Array());
+  const shared = [...decode('xl/sharedStrings.xml').matchAll(/<si>(.*?)<\/si>/gs)].map((m) =>
+    [...(m[1] ?? '').matchAll(/<t[^>]*>(.*?)<\/t>/gs)].map((t) => t[1]).join(''),
+  );
+  const sheet = decode('xl/worksheets/sheet1.xml');
+  return [...sheet.matchAll(/<c\b([^>]*)>(.*?)<\/c>/gs)].map(([, attrs = '', body = '']) => {
+    if (/t="s"/.test(attrs)) return shared[Number(body.match(/<v>(\d+)<\/v>/)?.[1])] ?? '';
+    return body.match(/<t[^>]*>(.*?)<\/t>/s)?.[1] ?? body.match(/<v>(.*?)<\/v>/s)?.[1] ?? '';
+  });
+}
+
+function toSeconds(text: string): number {
+  return text.split(':').reduce((total, part) => total * 60 + Number(part), 0);
+}
 
 test('GK登録 → 試合登録 → シュート記録（取り消しを含む）→ 分析 → シーン再生', async ({ page }) => {
   await createGoalkeeper(page, { name: '山田 太郎', teamName: '○○大学' });
@@ -43,6 +63,19 @@ test('GK登録 → 試合登録 → シュート記録（取り消しを含む�
   await expect(page.getByRole('heading', { name: 'シーン（1件）' })).toBeVisible();
   await page.reload();
   await expect(page.getByRole('heading', { name: 'シーン（1件）' })).toBeVisible();
+
+  // Excel の書き出し: 絞り込んだシーン（1件）を、シュート種別・動画開始時間・動画終了時間の一覧で書き出す
+  // （.steering/20261003-scene-excel-export）
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('button', { name: 'Excel で書き出す' }).click(),
+  ]);
+  expect(download.suggestedFilename()).toMatch(/^handball_analysis_scenes_山田太郎_\d{8}\.xlsx$/);
+  const texts = xlsxTexts(readFileSync(await download.path()));
+  expect(texts.slice(0, 3)).toEqual(['シュート種別', '動画開始時間', '動画終了時間']);
+  const [sheetStart, sheetEnd] = texts.filter((text) => /^\d+:\d{2}$/.test(text)).map(toSeconds);
+  // 既定の前余白4秒・後余白3秒（記録時刻が4秒より後のため、開始は0秒で切り詰められていない）
+  expect((sheetEnd ?? 0) - (sheetStart ?? 0)).toBe(7);
 
   // シーン再生（AC7）: 記録時刻の4秒前から3秒後まで
   await page.getByRole('region', { name: '絞り込み' }).getByRole('button', { name: 'クリア' }).click();

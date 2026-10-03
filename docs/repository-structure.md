@@ -70,6 +70,7 @@ src/
 │   ├── types.ts                   # スキーマから生成した型
 │   ├── validation.ts              # シュートの入力検証（V1〜V7）
 │   ├── youtube.ts                 # YouTube URL の解析・動画IDの検証
+│   ├── sceneSheet.ts              # シーン一覧の Excel の行・見出し・ファイル名（2026-10-03 追加）
 │   ├── stats/
 │   │   ├── filter.ts              # 絞り込み
 │   │   ├── metrics.ts             # セーブ率・失点率などの指標
