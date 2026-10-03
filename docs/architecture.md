@@ -26,6 +26,8 @@
 | スキーマ検証 | Zod | 4.x | 取り込みファイルの検証、フォーム入力の検証、型の自動生成を1か所で定義する |
 | PWA | vite-plugin-pwa | 1.x | ホーム画面への追加とアプリ本体のオフライン表示（2.3参照） |
 | 動画 | YouTube IFrame Player API | − | 公式の埋め込みプレーヤー。型定義は `@types/youtube` |
+| 動画の切り抜き | ffmpeg.wasm（`@ffmpeg/ffmpeg` `@ffmpeg/core`） | 0.12.x | シーンの MP4 書き出し。元の動画ファイルから、ブラウザの中（Web Worker）で再エンコードせずに切り抜く。本体（wasm 約32MB、gzip 約10MB）は使うときだけ同じオリジンから読み込む |
+| zip | fflate | 0.8.x | MP4 をまとめる無圧縮の zip の作成 |
 
 グラフ描画ライブラリは使わない。ヒートマップ・コート図は項目数が少ないため、SVGとTailwindで自作する。
 
@@ -173,7 +175,7 @@ graph TD
 
 ```
 default-src 'self';
-script-src 'self' https://www.youtube.com https://s.ytimg.com;
+script-src 'self' 'wasm-unsafe-eval' https://www.youtube.com https://s.ytimg.com;
 frame-src https://www.youtube-nocookie.com https://www.youtube.com;
 img-src 'self' data: https://i.ytimg.com;
 style-src 'self' 'unsafe-inline';
@@ -186,6 +188,8 @@ frame-ancestors 'none';
 ```
 
 ※ 2026-09-29 初回実装で、この CSP を付けた状態で実際の YouTube 動画の埋め込み・再生ができ、CSP 違反が出ないことを確認した。案に `object-src`・`base-uri`・`form-action`・`frame-ancestors` を追加している。
+
+※ 2026-10-03 シーンの MP4 書き出し（ffmpeg.wasm）のため、`script-src` に `'wasm-unsafe-eval'`（WebAssembly の実行に必要）を追加した。ffmpeg.wasm の本体・Worker は同じオリジンから配信するため、他のドメインは追加していない。この CSP を全レスポンスに付けた状態で書き出しができ、CSP 違反が出ないことを確認した
 
 ---
 

@@ -70,6 +70,7 @@ src/
 │   ├── types.ts                   # スキーマから生成した型
 │   ├── validation.ts              # シュートの入力検証（V1〜V7）
 │   ├── youtube.ts                 # YouTube URL の解析・動画IDの検証
+│   ├── clips.ts                   # シーンの切り抜き計画・MP4 のファイル名（2026-10-03 追加）
 │   ├── stats/
 │   │   ├── filter.ts              # 絞り込み
 │   │   ├── metrics.ts             # セーブ率・失点率などの指標
@@ -95,6 +96,9 @@ src/
 │   ├── types.ts                   # VideoPlayer インターフェース（テストでモックに差し替える）
 │   ├── loadYouTubeApi.ts          # IFrame API スクリプトの遅延読み込み
 │   └── youTubePlayer.ts           # IFrame API をラップした VideoPlayer の実装
+│
+├── media/                         # 動画の切り抜き（ffmpeg.wasm のラップ。2026-10-03 追加）
+│   └── ffmpegClipper.ts           # 元の動画ファイルから区間を MP4 に切り抜く（WORKERFS・中止）
 │
 ├── stores/                        # 画面の状態（Zustand）
 │   ├── analysisFilterStore.ts     # GK ごとの絞り込み条件
@@ -153,7 +157,9 @@ src/
 ├── lib/                           # 特定の層に属さない小さな汎用関数
 │   ├── id.ts                      # crypto.randomUUID のラッパー
 │   ├── time.ts                    # 秒 ⇔ mm:ss の変換、丸め
-│   └── download.ts                # ファイルのダウンロード
+│   ├── download.ts                # ファイルのダウンロード
+│   ├── storage.ts                 # 保存領域の永続化・使用量
+│   └── zip.ts                     # 無圧縮の zip の作成（fflate）
 │
 └── test/                          # テスト共通の設定・補助
     ├── setup.ts                   # Vitest のセットアップ（fake-indexeddb など）
@@ -170,8 +176,9 @@ src/
 | `domain/` | 型・列挙値・スキーマ・検証・集計など業務ロジック | `lib/` のみ |
 | `db/` | IndexedDB への保存・読み込み、書き出し・取り込み | `domain/`, `lib/` |
 | `player/` | YouTube IFrame API の制御 | `lib/` のみ |
+| `media/` | ffmpeg.wasm による動画の切り抜き | `lib/` のみ |
 | `stores/` | 画面をまたぐ状態 | `domain/`, `lib/` |
-| `hooks/` | データ取得・プレーヤー操作などを画面に提供 | `db/`, `player/`, `stores/`, `domain/`, `lib/` |
+| `hooks/` | データ取得・プレーヤー操作・動画の切り抜きなどを画面に提供 | `db/`, `player/`, `media/`, `stores/`, `domain/`, `lib/` |
 | `components/ui/` | 業務知識を持たない汎用部品 | `lib/` のみ |
 | `components/*`（ui 以外） | 業務の部品 | `components/ui/`, `hooks/`, `stores/`, `domain/`, `lib/`, `player/`（型のみ） |
 | `pages/` | ルートに対応する画面。部品を組み合わせる | 上記すべて（ただし `db/` は `hooks/` 経由で使う） |

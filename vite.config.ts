@@ -10,4 +10,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  // ffmpeg.wasm は内部で new URL('./worker.js', import.meta.url) を使うため、開発サーバーの事前バンドルから外す
+  optimizeDeps: {
+    exclude: ['@ffmpeg/ffmpeg'],
+  },
 });

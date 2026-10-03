@@ -1,9 +1,12 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { FilterPanel } from '@/components/analysis/FilterPanel';
+import { Mp4ExportModal } from '@/components/analysis/Mp4ExportModal';
 import { SceneList } from '@/components/analysis/SceneList';
 import { GoalHeatmap } from '@/components/court/GoalHeatmap';
+import { Button } from '@/components/ui/Button';
 import { HighlightPlayerModal } from '@/components/video/HighlightPlayerModal';
+import { planClips } from '@/domain/clips';
 import { applyFilter } from '@/domain/stats/filter';
 import { buildGoalHeatmap } from '@/domain/stats/heatmap';
 import { calcMetrics, formatRate } from '@/domain/stats/metrics';
@@ -25,6 +28,7 @@ export function AnalysisPage() {
   const toggleCriteriaValue = useAnalysisFilterStore((s) => s.toggleCriteriaValue);
   const setMetric = useAnalysisFilterStore((s) => s.setMetric);
   const [playingShot, setPlayingShot] = useState<Shot | null>(null);
+  const [isMp4ExportOpen, setIsMp4ExportOpen] = useState(false);
 
   const matchesById = useMemo(() => new Map((matches ?? []).map((m) => [m.id, m])), [matches]);
   // 除外していない試合が対象。あとから追加した試合は自動で対象に入る
@@ -109,12 +113,37 @@ export function AnalysisPage() {
             />
           </section>
           <aside className="flex min-h-0 flex-col border-border lg:border-l" aria-label="シーン">
-            <h2 className="border-b border-border px-3 py-2 text-sm font-bold">シーン（{sceneShots.length}件）</h2>
+            <div className="flex items-center justify-between gap-2 border-b border-border py-1 pr-1 pl-3">
+              <h2 className="text-sm font-bold">シーン（{sceneShots.length}件）</h2>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-primary"
+                disabled={sceneShots.length === 0}
+                title="絞り込んだシーンを、元の動画ファイルから切り抜いた MP4 で書き出します"
+                onClick={() => setIsMp4ExportOpen(true)}
+              >
+                MP4 で書き出す
+              </Button>
+            </div>
             <div className="min-h-0 flex-1 overflow-y-auto">
               <SceneList shots={sceneShots} matchesById={matchesById} onPlay={setPlayingShot} />
             </div>
           </aside>
         </div>
+      )}
+
+      {isMp4ExportOpen && (
+        <Mp4ExportModal
+          goalkeeper={goalkeeper}
+          plans={planClips({
+            shots: sceneShots,
+            matchesById,
+            preSeconds: settings.highlightPreSeconds,
+            postSeconds: settings.highlightPostSeconds,
+          })}
+          onClose={() => setIsMp4ExportOpen(false)}
+        />
       )}
 
       {playingShot && playingMatch && (
