@@ -448,7 +448,7 @@ erDiagram
 | handedness / shooterHand | `right` 右、`left` 左、`unknown` 不明 |
 | zone | `lw` レフトウイング、`lb` レフトバック、`cb` センター、`rb` ライトバック、`rw` ライトウイング、`pivot_l` 6m左、`pivot_c` 6m中央、`pivot_r` 6m右、`seven_m` 7mスロー、`fast_break` 速攻、`long` ロングシュート |
 | goalCell | `1`〜`9`（上段左から右へ1・2・3、中段4・5・6、下段7・8・9。シューターから見た向き） |
-| shotType | `side` サイドシュート、`middle` ミドルシュート、`pivot` ポスト、`cut_in` カットイン、`fast_break` 速攻 |
+| shotType | `side` サイドシュート、`middle` ミドルシュート、`pivot` ポスト、`cut_in` カットイン、`fast_break` 速攻、`seven_m` 7mスロー |
 | result | `goal` 失点、`save` セーブ、`post` ポスト・バー、`miss` 枠外、`blocked` DFブロック |
 | goalkeeperAction | `hand` 手、`foot` 足、`body` 体、`none` 反応なし |
 | shooterPosition | `LW`、`LB`、`CB`、`RB`、`RW`、`PV` |

@@ -14,8 +14,8 @@
 - [x] T5 E2E: 分析画面から .xlsx を書き出し、展開して見出し・行・時間を確認する
 - [x] T6 docs（functional-design.md・architecture.md・repository-structure.md・product-requirements.md）、README
 - [x] T7 lint・型チェック・単体テスト・E2E が成功し、初回表示の JS が大きくなっていない
-- [ ] T8 Pull Request を作成し、CI が成功することを確認する
-- [ ] 👤 T9 Pull Request をレビューしてマージする
+- [x] T8 Pull Request を作成し、CI が成功することを確認する
+- [x] 👤 T9 Pull Request をレビューしてマージする
 - [ ] 👤 T10 書き出したファイルを Excel で開き、見出しの固定・時間の表示を確認する
 
 ## 実施メモ
