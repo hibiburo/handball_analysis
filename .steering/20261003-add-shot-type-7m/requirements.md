@@ -40,5 +40,5 @@
 - [x] T1 `domain/enums.ts` に `seven_m` を追加、`isShotType` のテストに追加
 - [x] T2 docs（glossary.md・functional-design.md・product-requirements.md）
 - [x] T3 lint・型チェック・単体テスト（用語集のテストを含む）・E2E が成功する
-- [ ] T4 Pull Request を作成し、CI が成功することを確認する
+- [x] T4 Pull Request を作成し、CI が成功することを確認する
 - [ ] 👤 T5 Pull Request をレビューしてマージする
