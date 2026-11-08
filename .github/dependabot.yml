@@ -2,8 +2,9 @@ version: 2
 updates:
   - package-ecosystem: npm
     directory: /
+    # 更新の PR が増えすぎないよう、確認は月に1回にする（2026-11-09 に毎週から変更）
     schedule:
-      interval: weekly
+      interval: monthly
     groups:
       # 開発用ツールはまとめて1つの Pull Request にする
       dev-dependencies:
